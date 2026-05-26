@@ -1,73 +1,153 @@
 export function validateSchemaStructure(
-    schema: any
-) {
+  schema: any
+): boolean {
 
-    if (!schema.tables) {
-        return false;
+  // Schema must exist
+  if (
+    !schema ||
+    typeof schema !== "object"
+  ) {
+    return false;
+  }
+
+  // tables must exist
+  if (!schema.tables) {
+    return false;
+  }
+
+  // tables must be array
+  if (
+    !Array.isArray(schema.tables)
+  ) {
+    return false;
+  }
+
+  // at least one table
+  if (
+    schema.tables.length === 0
+  ) {
+    return false;
+  }
+
+  // Validate unique table names
+  const tableNames =
+    schema.tables.map(
+      (table: any) =>
+        table.name
+    );
+
+  const uniqueTableNames =
+    new Set(tableNames);
+
+  if (
+    uniqueTableNames.size !==
+    tableNames.length
+  ) {
+    return false;
+  }
+
+  // Validate every table
+  for (const table of schema.tables) {
+
+    // Table must be object
+    if (
+      !table ||
+      typeof table !== "object"
+    ) {
+      return false;
     }
 
-    if (!Array.isArray(schema.tables)) {
-        return false;
+    // Table name validation
+    if (
+      !table.name ||
+      typeof table.name !== "string"
+    ) {
+      return false;
     }
 
-    if (schema.tables.length === 0) {
-        return false;
+    // Fields must exist
+    if (!table.fields) {
+      return false;
     }
 
-    const tableNames =
-        schema.tables.map(
-            (t: any) => t.name
-        );
+    // Fields must be array
+    if (
+      !Array.isArray(table.fields)
+    ) {
+      return false;
+    }
 
-    const uniqueTableNames =
-        new Set(tableNames);
+    // At least one field
+    if (
+      table.fields.length === 0
+    ) {
+      return false;
+    }
+
+    // Validate unique field names
+    const fieldNames =
+      table.fields.map(
+        (field: any) =>
+          field.name
+      );
+
+    const uniqueFieldNames =
+      new Set(fieldNames);
 
     if (
-        uniqueTableNames.size !==
-        tableNames.length
+      uniqueFieldNames.size !==
+      fieldNames.length
     ) {
+      return false;
+    }
+
+    // Validate each field
+    for (const field of table.fields) {
+
+      // Field must be object
+      if (
+        !field ||
+        typeof field !== "object"
+      ) {
         return false;
+      }
+
+      // Field name validation
+      if (
+        !field.name ||
+        typeof field.name !== "string"
+      ) {
+        return false;
+      }
+
+      // Field type validation
+      if (
+        !field.type ||
+        typeof field.type !== "string"
+      ) {
+        return false;
+      }
+
+      // Allowed SQL types
+      const allowedTypes = [
+        "text",
+        "integer",
+        "boolean",
+        "uuid",
+        "timestamp",
+        "date",
+        "float",
+      ];
+
+      if (
+        !allowedTypes.includes(
+          field.type.toLowerCase()
+        )
+      ) {
+        return false;
+      }
     }
+  }
 
-    for (const table of schema.tables) {
-
-        if (!table.name || !table.fields) {
-            return false;
-        }
-
-        if (!Array.isArray(table.fields)) {
-            return false;
-        }
-
-        if (table.fields.length === 0) {
-            return false;
-        }
-
-        const fieldNames =
-            table.fields.map(
-                (f: any) => f.name
-            );
-
-        const uniqueFieldNames =
-            new Set(fieldNames);
-
-        if (
-            uniqueFieldNames.size !==
-            fieldNames.length
-        ) {
-            return false;
-        }
-
-        for (const field of table.fields) {
-
-            if (
-                !field.name ||
-                !field.type
-            ) {
-                return false;
-            }
-        }
-    }
-
-    return true;
+  return true;
 }
