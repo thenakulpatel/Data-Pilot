@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { authorizeProject }
-  from "@/lib/auth/authorizeProject";
+import { authorizeApiAccess }
+  from "@/lib/auth/authorizeApiAccess";
 
 import { pool } from "@/lib/db";
 
@@ -31,7 +31,7 @@ export async function GET(
       await context.params;
 
     const auth =
-      await authorizeProject(
+      await authorizeApiAccess(
         req,
         projectId
       );
@@ -135,7 +135,7 @@ export async function POST(
       await context.params;
 
     const auth =
-      await authorizeProject(
+      await authorizeApiAccess(
         req,
         projectId
       );

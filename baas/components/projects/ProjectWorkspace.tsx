@@ -5,11 +5,14 @@ import {
   useState,
 } from "react";
 
+import LiveTableViewer
+  from "./LiveTableViewer";
+
 import { Button }
   from "@/components/ui/button";
 
-import CsvUploader
-  from "./CsvUploader";
+import SpreadsheetUploader
+  from "./SpreadsheetUploader";
 
 import EditableDataGrid
   from "./EditableDataGrid";
@@ -28,13 +31,19 @@ import {
   PreviewData,
 } from "@/types/preview";
 
+import ApiKeyCard
+  from "./ApiKeyCard";
+
+
 interface Props {
   projectId: string;
+  apiKey: string;
 }
 
 export default function
   ProjectWorkspace({
     projectId,
+    apiKey,
   }: Props) {
 
   const [schema, setSchema] =
@@ -44,6 +53,12 @@ export default function
 
   const [preview, setPreview] =
     useState<PreviewData | null>(
+      null
+    );
+
+  const [selectedTable,
+    setSelectedTable] =
+    useState<string | null>(
       null
     );
 
@@ -135,13 +150,20 @@ export default function
 
       </div>
 
+      <ApiKeyCard
+        apiKey={apiKey}
+      />
+
       <ExistingTables
         schema={schema}
+        onOpenTable={
+          setSelectedTable
+        }
       />
 
       {showUploader && (
 
-        <CsvUploader
+        <SpreadsheetUploader
           projectId={projectId}
           onPreviewReady={
             setPreview
@@ -167,6 +189,16 @@ export default function
             // Hide uploader
             setShowUploader(false);
           }}
+        />
+
+      )}
+      {selectedTable && (
+
+        <LiveTableViewer
+          projectId={projectId}
+          tableName={
+            selectedTable
+          }
         />
 
       )}

@@ -14,6 +14,7 @@ import {
 } from "@/types/preview";
 
 interface Props {
+
   projectId: string;
 
   onPreviewReady: (
@@ -22,7 +23,7 @@ interface Props {
 }
 
 export default function
-CsvUploader({
+SpreadsheetUploader({
   projectId,
   onPreviewReady,
 }: Props) {
@@ -40,18 +41,62 @@ CsvUploader({
 
   async function handleUpload() {
 
-    setError("");
-
-    if (!file) {
-
-      setError(
-        "CSV file required"
-      );
-
-      return;
-    }
-
     try {
+
+      setError("");
+
+      if (!file) {
+
+        setError(
+          "Spreadsheet file required"
+        );
+
+        return;
+      }
+
+      // ===============================================
+      // FILE TYPE
+      // ===============================================
+
+      const fileName =
+        file.name.toLowerCase();
+
+      const isCSV =
+        fileName.endsWith(
+          ".csv"
+        );
+
+      const isXLSX =
+        fileName.endsWith(
+          ".xlsx"
+        );
+
+      if (
+        !isCSV &&
+        !isXLSX
+      ) {
+
+        setError(
+          "Only CSV and XLSX files are supported"
+        );
+
+        return;
+      }
+
+      // ===============================================
+      // ENDPOINT
+      // ===============================================
+
+      const endpoint =
+        isCSV
+
+          ? "csv"
+
+          : "xlsx";
+
+      // ===============================================
+      // REQUEST
+      // ===============================================
 
       setLoading(true);
 
@@ -68,7 +113,7 @@ CsvUploader({
 
       const response =
         await fetch(
-          `/api/projects/${projectId}/preview/csv`,
+          `/api/projects/${projectId}/preview/${endpoint}`,
           {
             method: "POST",
 
@@ -119,7 +164,7 @@ CsvUploader({
 
       <input
         type="file"
-        accept=".csv"
+        accept=".csv,.xlsx"
         onChange={(e) => {
 
           const selected =
@@ -151,7 +196,7 @@ CsvUploader({
 
         {loading
           ? "Processing..."
-          : "Preview CSV"}
+          : "Preview Spreadsheet"}
 
       </Button>
 

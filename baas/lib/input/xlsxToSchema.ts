@@ -1,51 +1,65 @@
-import * as XLSX from "xlsx";
-
 import { inferType }
 from "./inferTypes";
 
-import { Schema, Table }
-from "@/lib/schema/types";
+import {
+  Schema,
+} from "@/lib/schema/types";
 
 export function xlsxToSchema(
-  workbook: XLSX.WorkBook
+  tableName: string,
+  rows: Record<string, any>[]
 ): Schema {
 
-  const tables: Table[] = [];
+  // ================================================
+  // EMPTY FILE
+  // ================================================
 
-  for (const sheetName of workbook.SheetNames) {
+  if (rows.length === 0) {
 
-    const worksheet =
-      workbook.Sheets[sheetName];
-
-    const records =
-      XLSX.utils.sheet_to_json(
-        worksheet
-      );
-
-    if (records.length === 0) {
-      continue;
-    }
-
-    const sample =
-      records[0] as Record<string, any>;
-
-    const fields =
-      Object.keys(sample).map(
-        (key) => ({
-          name: key,
-          type: inferType(
-            sample[key]
-          ),
-        })
-      );
-
-    tables.push({
-      name: sheetName.toLowerCase(),
-      fields,
-    });
+    return {
+      tables: [],
+    };
   }
 
+  // ================================================
+  // SAMPLE ROW
+  // ================================================
+
+  const sample =
+    rows[0];
+
+  // ================================================
+  // INFER FIELDS
+  // ================================================
+
+  const fields =
+    Object.keys(sample).map(
+      (key) => ({
+
+        name: key,
+
+        type: inferType(
+          sample[key]
+        ),
+      })
+    );
+
+  // ================================================
+  // RETURN SCHEMA
+  // ================================================
+
   return {
-    tables,
+
+    tables: [
+
+      {
+        name:
+          tableName
+            .toLowerCase()
+            .replace(/\s+/g, "_"),
+
+        fields,
+      },
+    ],
   };
 }

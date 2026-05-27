@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse }
-from "next/server";
+  from "next/server";
+
+import { generateApiKey }
+  from "@/lib/auth/generateApiKey";
 
 import { pool }
-from "@/lib/db";
+  from "@/lib/db";
 
 import { getUser }
-from "@/lib/auth/getUser";
+  from "@/lib/auth/getUser";
 
 export async function POST(
   req: NextRequest
@@ -57,16 +60,19 @@ export async function POST(
 
     const { name } = body;
 
+    const apiKey =
+      generateApiKey();
+
     // Create owned project
     const result =
       await pool.query(
         `
         INSERT INTO projects
-        (name, user_id)
-        VALUES ($1, $2)
+        (name, user_id,api_key)
+        VALUES ($1, $2, $3)
         RETURNING *;
         `,
-        [name, user.id]
+        [name, user.id, apiKey]
       );
 
     return NextResponse.json(

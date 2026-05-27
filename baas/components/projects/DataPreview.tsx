@@ -1,6 +1,7 @@
 import {
   PreviewData,
-} from "./ProjectWorkspace";
+} from "@/types/preview";
+
 import {
   Schema,
 } from "@/types/schema";

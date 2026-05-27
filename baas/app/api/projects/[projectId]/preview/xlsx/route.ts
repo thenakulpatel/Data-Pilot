@@ -3,17 +3,20 @@ import {
   NextResponse,
 } from "next/server";
 
+import * as XLSX
+  from "xlsx";
+
 import { authorizeProject }
-from "@/lib/auth/authorizeProject";
+  from "@/lib/auth/authorizeProject";
 
-import { parseCSV }
-from "@/lib/input/parsers/csvParser";
+import { parseXLSX }
+  from "@/lib/input/parsers/xlsxParser";
 
-import { validateCSV }
-from "@/lib/input/validators/validateCSV";
+import { validateXLSX }
+  from "@/lib/input/validators/validateXLSX";
 
-import { csvToSchema }
-from "@/lib/input/csvToSchema";
+import { xlsxToSchema }
+  from "@/lib/input/xlsxToSchema";
 
 export async function POST(
   req: NextRequest,
@@ -64,7 +67,7 @@ export async function POST(
       return NextResponse.json(
         {
           error:
-            "CSV file required",
+            "XLSX file required",
         },
         {
           status: 400,
@@ -72,16 +75,17 @@ export async function POST(
       );
     }
 
-    // Optional:
     // Validate extension
     if (
-      !file.name.endsWith(".csv")
+      !file.name.endsWith(
+        ".xlsx"
+      )
     ) {
 
       return NextResponse.json(
         {
           error:
-            "Only CSV files allowed",
+            "Only XLSX files allowed",
         },
         {
           status: 400,
@@ -89,17 +93,22 @@ export async function POST(
       );
     }
 
-    // Read file content
-    const content =
-      await file.text();
+    // Read file
+    const bytes =
+      await file.arrayBuffer();
 
-    // Parse CSV
-    const rows =
-      parseCSV(content);
+    const buffer =
+      Buffer.from(bytes);
 
-    // Validate parsed CSV
+    // Parse workbook
+    const workbook =
+      parseXLSX(buffer);
+
+    // Validate workbook
     const validation =
-      validateCSV(rows);
+      validateXLSX(
+        workbook
+      );
 
     if (!validation.valid) {
 
@@ -114,20 +123,37 @@ export async function POST(
       );
     }
 
+    // First sheet
+    const firstSheet =
+      workbook.SheetNames[0];
+
+    const worksheet =
+      workbook.Sheets[
+      firstSheet
+      ];
+
+    // Convert to rows[]
+    const rows: Record<
+      string,
+      string | number | boolean | null
+    >[] =
+      XLSX.utils.sheet_to_json(
+        worksheet
+      );
+
     // Infer table name
     const tableName =
       file.name.replace(
-        ".csv",
+        ".xlsx",
         ""
       );
 
     // Generate schema
     const schema =
-      csvToSchema(
+      xlsxToSchema(
         tableName,
         rows
       );
-
 
     return NextResponse.json({
       schema,

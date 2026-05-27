@@ -4,16 +4,16 @@ import {
 } from "next/server";
 
 import { pool }
-from "@/lib/db";
+  from "@/lib/db";
 
 import { authorizeProject }
-from "@/lib/auth/authorizeProject";
+  from "@/lib/auth/authorizeProject";
 
 import { generateSQL }
-from "@/lib/schema/sqlGenerator";
+  from "@/lib/schema/sqlGenerator";
 
 import { executeQueries }
-from "@/lib/schema/executeSQL";
+  from "@/lib/schema/executeSQL";
 
 import {
   validateSchemaStructure,
@@ -24,7 +24,7 @@ import {
 } from "@/types/schema";
 
 import { getPhysicalTableName }
-from "@/lib/schema/getPhysicalTableName";
+  from "@/lib/schema/getPhysicalTableName";
 
 export async function POST(
   req: NextRequest,
@@ -77,6 +77,10 @@ export async function POST(
       schema,
       rows,
     } = body;
+
+    // console.log("DEPLOY START");
+    // console.log("SCHEMA:", schema);
+    // console.log("ROWS:", rows.length);
 
     // =====================================================
     // VALIDATE SCHEMA
@@ -135,8 +139,8 @@ export async function POST(
 
     let existingSchema:
       Schema = {
-        tables: [],
-      };
+      tables: [],
+    };
 
     if (
       existingResult.rows.length > 0
@@ -209,10 +213,14 @@ export async function POST(
       ) {
 
         const keys =
-          Object.keys(row);
+          Object.keys(row).filter(
+            (key) => key !== "id"
+          );
 
         const values =
-          Object.values(row);
+          keys.map(
+            (key) => row[key]
+          );
 
         const columns =
           keys.join(", ");

@@ -1,3 +1,6 @@
+import { Button }
+from "@/components/ui/button";
+
 import {
   Card,
   CardContent,
@@ -10,12 +13,18 @@ import {
 } from "@/types/schema";
 
 interface Props {
+
   schema: Schema | null;
+
+  onOpenTable: (
+    tableName: string
+  ) => void;
 }
 
 export default function
 ExistingTables({
   schema,
+  onOpenTable,
 }: Props) {
 
   if (
@@ -61,11 +70,28 @@ ExistingTables({
             key={table.name}
           >
 
-            <CardHeader>
+            <CardHeader
+              className="
+                flex
+                flex-row
+                items-center
+                justify-between
+              "
+            >
 
               <CardTitle>
                 {table.name}
               </CardTitle>
+
+              <Button
+                onClick={() =>
+                  onOpenTable(
+                    table.name
+                  )
+                }
+              >
+                Open Table
+              </Button>
 
             </CardHeader>
 
