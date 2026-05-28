@@ -19,6 +19,10 @@ import {
 import { Button }
   from "@/components/ui/button";
 
+
+import { authenticatedFetch }
+  from "@/lib/frontend/authenticatedFetch";
+
 import ApiEndpoints
   from "./ApiEndpoints";
 
@@ -72,14 +76,8 @@ export default function
         getToken();
 
       const response =
-        await fetch(
+        await authenticatedFetch(
           `/api/projects/${projectId}/data/${tableName}`,
-          {
-            headers: {
-              Authorization:
-                `Bearer ${token}`,
-            },
-          }
         );
 
       const data =

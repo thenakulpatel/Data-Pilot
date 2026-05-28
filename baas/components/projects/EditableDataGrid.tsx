@@ -6,6 +6,10 @@ import { useState }
 import { Button }
   from "@/components/ui/button";
 
+
+import { authenticatedFetch }
+  from "@/lib/frontend/authenticatedFetch";
+
 import {
   Card,
   CardContent,
@@ -89,7 +93,7 @@ export default function
         );
 
       const response =
-        await fetch(
+        await authenticatedFetch(
           `/api/projects/${projectId}/deploy`,
           {
             method: "POST",
@@ -99,8 +103,6 @@ export default function
               "Content-Type":
                 "application/json",
 
-              Authorization:
-                `Bearer ${token}`,
             },
 
             body: JSON.stringify({
@@ -217,9 +219,69 @@ export default function
         "
       >
 
-        <CardTitle>
-          {table.name}
-        </CardTitle>
+        <div
+          className="
+    space-y-2
+  "
+        >
+
+          <p
+            className="
+      text-sm
+      font-medium
+    "
+          >
+            Table Name
+          </p>
+
+          <input
+
+            value={
+              table.name
+            }
+
+            onChange={(e) => {
+
+              const updated =
+                structuredClone(
+                  preview
+                );
+
+              updated.schema.tables[0]
+                .name =
+
+                e.target.value
+
+                  .toLowerCase()
+
+                  .replace(
+                    /[\s-]+/g,
+                    "_"
+                  )
+
+                  .replace(
+                    /[^a-z0-9_]/g,
+                    ""
+                  );
+
+              setPreview(updated);
+            }}
+
+            placeholder="
+      Enter table name
+    "
+
+            className="
+      border
+      rounded-md
+      px-3
+      py-2
+      text-sm
+      w-[250px]
+    "
+          />
+
+        </div>
 
         <div
           className="

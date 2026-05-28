@@ -5,8 +5,14 @@ import {
   useState,
 } from "react";
 
+import AiSchemaGenerator
+  from "./AiSchemaGenerator";
+
 import LiveTableViewer
   from "./LiveTableViewer";
+
+import { logout }
+  from "@/lib/frontend/logout";
 
 import { Button }
   from "@/components/ui/button";
@@ -20,8 +26,8 @@ import EditableDataGrid
 import ExistingTables
   from "./ExistingTables";
 
-import { getToken }
-  from "@/lib/frontend/auth";
+import { authenticatedFetch }
+  from "@/lib/frontend/authenticatedFetch";
 
 import {
   Schema,
@@ -70,18 +76,10 @@ export default function
 
     try {
 
-      const token =
-        getToken();
 
       const response =
-        await fetch(
+        await authenticatedFetch(
           `/api/projects/${projectId}/schema`,
-          {
-            headers: {
-              Authorization:
-                `Bearer ${token}`,
-            },
-          }
         );
 
       if (
@@ -96,7 +94,15 @@ export default function
       const data =
         await response.json();
 
+      if (response.status === 401) {
+
+        logout();
+
+        return;
+      }
+
       if (!response.ok) {
+
         return;
       }
 
@@ -152,6 +158,11 @@ export default function
 
       <ApiKeyCard
         apiKey={apiKey}
+      />
+
+      <AiSchemaGenerator
+        projectId={projectId}
+        onGenerated={setPreview}
       />
 
       <ExistingTables

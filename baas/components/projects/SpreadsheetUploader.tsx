@@ -1,13 +1,16 @@
 "use client";
 
 import { useState }
-from "react";
+  from "react";
 
 import { Button }
-from "@/components/ui/button";
+  from "@/components/ui/button";
+
+import { authenticatedFetch }
+  from "@/lib/frontend/authenticatedFetch";
 
 import { getToken }
-from "@/lib/frontend/auth";
+  from "@/lib/frontend/auth";
 
 import {
   PreviewData,
@@ -23,10 +26,10 @@ interface Props {
 }
 
 export default function
-SpreadsheetUploader({
-  projectId,
-  onPreviewReady,
-}: Props) {
+  SpreadsheetUploader({
+    projectId,
+    onPreviewReady,
+  }: Props) {
 
   const [file, setFile] =
     useState<File | null>(
@@ -112,16 +115,10 @@ SpreadsheetUploader({
       );
 
       const response =
-        await fetch(
+        await authenticatedFetch(
           `/api/projects/${projectId}/preview/${endpoint}`,
           {
             method: "POST",
-
-            headers: {
-              Authorization:
-                `Bearer ${token}`,
-            },
-
             body: formData,
           }
         );

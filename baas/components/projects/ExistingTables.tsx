@@ -1,6 +1,10 @@
 import { Button }
 from "@/components/ui/button";
 
+
+import { authenticatedFetch }
+  from "@/lib/frontend/authenticatedFetch";
+
 import {
   Card,
   CardContent,

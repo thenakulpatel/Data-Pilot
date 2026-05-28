@@ -4,16 +4,19 @@ import {
 } from "next/server";
 
 import { authorizeProject }
-from "@/lib/auth/authorizeProject";
+  from "@/lib/auth/authorizeProject";
 
 import { parseCSV }
-from "@/lib/input/parsers/csvParser";
+  from "@/lib/input/parsers/csvParser";
+
+import { sanitizeSqlName }
+  from "@/lib/sql/sanitizeSqlName";
 
 import { validateCSV }
-from "@/lib/input/validators/validateCSV";
+  from "@/lib/input/validators/validateCSV";
 
 import { csvToSchema }
-from "@/lib/input/csvToSchema";
+  from "@/lib/input/csvToSchema";
 
 export async function POST(
   req: NextRequest,
@@ -122,7 +125,7 @@ export async function POST(
       );
 
     // Generate schema
-    const schema =
+    const result =
       csvToSchema(
         tableName,
         rows
@@ -130,8 +133,12 @@ export async function POST(
 
 
     return NextResponse.json({
-      schema,
-      rows,
+
+      schema:
+        result.schema,
+
+      rows:
+        result.rows,
     });
 
   } catch (error) {

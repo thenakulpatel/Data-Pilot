@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter }
-from "next/navigation";
+  from "next/navigation";
 
 import { Button }
-from "@/components/ui/button";
+  from "@/components/ui/button";
 
-import { removeToken }
-from "@/lib/frontend/auth";
+import { logout }
+  from "@/lib/frontend/logout";
 
 export default function LogoutButton() {
 
@@ -15,10 +15,7 @@ export default function LogoutButton() {
     useRouter();
 
   function handleLogout() {
-
-    removeToken();
-
-    router.push("/login");
+    logout();
   }
 
   return (

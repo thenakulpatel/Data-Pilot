@@ -1,14 +1,13 @@
 import { inferType }
 from "./inferTypes";
 
-import {
-  Schema,
-} from "@/lib/schema/types";
+import { sanitizeSqlName }
+from "@/lib/sql/sanitizeSqlName";
 
 export function xlsxToSchema(
   tableName: string,
   rows: Record<string, any>[]
-): Schema {
+) {
 
   // ================================================
   // EMPTY FILE
@@ -17,16 +16,49 @@ export function xlsxToSchema(
   if (rows.length === 0) {
 
     return {
-      tables: [],
+
+      schema: {
+        tables: [],
+      },
+
+      rows: [],
     };
   }
+
+  // ================================================
+  // SANITIZE ROWS
+  // ================================================
+
+  const sanitizedRows =
+
+    rows.map((row) => {
+
+      const newRow:
+        Record<string, any>
+        = {};
+
+      Object.entries(row)
+        .forEach(
+
+          ([key, value]) => {
+
+            newRow[
+              sanitizeSqlName(
+                key
+              )
+            ] = value;
+          }
+        );
+
+      return newRow;
+    });
 
   // ================================================
   // SAMPLE ROW
   // ================================================
 
   const sample =
-    rows[0];
+    sanitizedRows[0];
 
   // ================================================
   // INFER FIELDS
@@ -45,21 +77,27 @@ export function xlsxToSchema(
     );
 
   // ================================================
-  // RETURN SCHEMA
+  // RETURN
   // ================================================
 
   return {
 
-    tables: [
+    schema: {
 
-      {
-        name:
-          tableName
-            .toLowerCase()
-            .replace(/\s+/g, "_"),
+      tables: [
 
-        fields,
-      },
-    ],
+        {
+
+          name: sanitizeSqlName(
+            tableName
+          ),
+
+          fields,
+        },
+      ],
+    },
+
+    rows:
+      sanitizedRows,
   };
 }

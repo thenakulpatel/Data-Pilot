@@ -149,15 +149,19 @@ export async function POST(
       );
 
     // Generate schema
-    const schema =
+    const result =
       xlsxToSchema(
         tableName,
         rows
       );
 
     return NextResponse.json({
-      schema,
-      rows,
+
+      schema:
+        result.schema,
+
+      rows:
+        result.rows,
     });
 
   } catch (error) {

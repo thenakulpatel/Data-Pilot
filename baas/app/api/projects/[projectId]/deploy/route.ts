@@ -6,6 +6,9 @@ import {
 import { pool }
   from "@/lib/db";
 
+  import { sanitizeSqlName }
+from "@/lib/sql/sanitizeSqlName";
+
 import { authorizeProject }
   from "@/lib/auth/authorizeProject";
 
@@ -175,7 +178,7 @@ export async function POST(
         );
       }
     }
-
+    console.log(schema);
     // =====================================================
     // GENERATE SQL
     // =====================================================

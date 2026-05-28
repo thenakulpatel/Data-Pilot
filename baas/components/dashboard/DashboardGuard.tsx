@@ -5,42 +5,84 @@ import {
   useState,
 } from "react";
 
-import { useRouter }
-from "next/navigation";
-
 import { getToken }
 from "@/lib/frontend/auth";
 
-export default function DashboardGuard({
+import { authenticatedFetch }
+from "@/lib/frontend/authenticatedFetch";
+
+export default function
+DashboardGuard({
+
   children,
+
 }: {
   children: React.ReactNode;
 }) {
 
-  const router =
-    useRouter();
-
-  const [checking, setChecking] =
+  const [checking,
+    setChecking] =
     useState(true);
 
   useEffect(() => {
 
-    const token =
-      getToken();
+    async function validate() {
 
-    if (!token) {
+      try {
 
-      router.push("/login");
+        // ==========================================
+        // TOKEN
+        // ==========================================
 
-    } else {
+        const token =
+          getToken();
 
-      setChecking(false);
+        // ==========================================
+        // NO TOKEN
+        // ==========================================
+
+        if (!token) {
+
+          window.location.replace(
+            "/login"
+          );
+
+          return;
+        }
+
+        // ==========================================
+        // VALIDATE SESSION
+        // ==========================================
+
+        await authenticatedFetch(
+          "/api/auth/me"
+        );
+
+        // ==========================================
+        // SUCCESS
+        // ==========================================
+
+        setChecking(false);
+
+      } catch {
+
+        // authenticatedFetch
+        // handles redirect
+      }
     }
 
-  }, [router]);
+    validate();
+
+  }, []);
+
+  // ================================================
+  // LOADING
+  // ================================================
 
   if (checking) {
+
     return (
+
       <div
         className="
           min-h-screen
@@ -49,12 +91,18 @@ export default function DashboardGuard({
           justify-center
         "
       >
+
         <p>
           Loading...
         </p>
+
       </div>
     );
   }
+
+  // ================================================
+  // CONTENT
+  // ================================================
 
   return <>{children}</>;
 }
