@@ -148,8 +148,7 @@ ALLOWED FIELD TYPES
 ================================================
 
 - text
-- integer
-- float
+- number
 - boolean
 - date
 

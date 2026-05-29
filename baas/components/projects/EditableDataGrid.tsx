@@ -6,6 +6,12 @@ import { useState }
 import { Button }
   from "@/components/ui/button";
 
+import { validateColumnType, }
+  from "@/lib/schema/validateColumnType";
+
+import { validateSqlName }
+  from "@/lib/sql/validateSqlName";
+
 
 import { authenticatedFetch }
   from "@/lib/frontend/authenticatedFetch";
@@ -85,7 +91,84 @@ export default function
 
       setDeployError("");
 
+      const typeErrors:
+        string[] = [];
+      console.log(
+        "Current fields:",
+        preview.schema.tables[0]
+          .fields
+      );
+
+      for (
+        const field
+        of preview.schema.tables[0].fields
+      ) {
+        console.log(
+          field.name,
+          field.type
+        );
+        const result =
+          validateColumnType(
+
+            preview.rows,
+
+            field.name,
+
+            field.type
+          );
+
+        if (
+          !result.valid
+        ) {
+
+          typeErrors.push(
+
+            `${field.name}: ${result.invalidCount} incompatible value(s) for ${field.type}`
+
+          );
+        }
+      }
+
+      if (
+        typeErrors.length > 0
+      ) {
+
+        setDeployError(
+
+          typeErrors.join("\n")
+
+        );
+
+        return;
+      }
+
+      const hasErrors =
+
+        preview.schema.tables[0].fields.some(
+          (field) =>
+
+            !validateSqlName(
+
+              field.name,
+
+              preview.schema.tables[0].fields.map(
+                (f) => f.name
+              )
+
+            ).valid
+        );
+
+      if (hasErrors) {
+
+        setDeployError(
+          "Fix field names before deployment"
+        );
+
+        return;
+      }
+
       setDeploying(true);
+
 
       const token =
         localStorage.getItem(
@@ -145,6 +228,8 @@ export default function
       setDeploying(false);
     }
   }
+
+
   function updateCell(
     rowIndex: number,
     column: string,
@@ -158,6 +243,8 @@ export default function
       ...updatedRows[rowIndex],
       [column]: value,
     };
+
+    setDeployError("");
 
     setPreview({
       ...preview,
@@ -174,7 +261,7 @@ export default function
         (_, index) =>
           index !== rowIndex
       );
-
+    setDeployError("");
     setPreview({
       ...preview,
       rows: updatedRows,
@@ -197,7 +284,7 @@ export default function
         ] = "";
       }
     );
-
+    setDeployError("");
     setPreview({
       ...preview,
       rows: [
@@ -206,7 +293,47 @@ export default function
       ],
     });
   }
+  function updateFieldName(
+    fieldIndex: number,
+    value: string
+  ) {
 
+    const oldName =
+      table.fields[fieldIndex].name;
+
+    const updated =
+      structuredClone(
+        preview
+      );
+
+    // Update schema field
+    updated.schema.tables[0]
+      .fields[fieldIndex]
+      .name = value;
+
+    // Rename row keys
+    updated.rows =
+      updated.rows.map(
+        (row) => {
+
+          const newRow = {
+            ...row,
+          };
+
+          newRow[value] =
+            newRow[oldName];
+
+          delete newRow[
+            oldName
+          ];
+
+          return newRow;
+        }
+      );
+
+    setDeployError("");
+    setPreview(updated);
+  }
   return (
     <Card>
 
@@ -339,10 +466,10 @@ export default function
               <tr>
 
                 {table.fields.map(
-                  (field) => (
+                  (field, index) => (
 
                     <th
-                      key={field.name}
+                      key={index}
                       className="
                         border-b
                         p-3
@@ -351,17 +478,108 @@ export default function
                       "
                     >
 
-                      <div>
-                        {field.name}
-                      </div>
+                      <div
+                        className="
+    space-y-1
+  "
+                      >
 
+                        <input
+
+                          value={
+                            field.name
+                          }
+
+                          onChange={(e) =>
+                            updateFieldName(
+                              index,
+                              e.target.value
+                            )
+                          }
+
+                          className="
+      w-full
+      border
+      rounded
+      px-2
+      py-1
+      text-sm
+    "
+                        />
+
+                        {!validateSqlName(
+                          field.name,
+
+                          table.fields.map(
+                            (f) => f.name
+                          )
+                        ).valid && (
+
+                            <p
+                              className="
+        text-xs
+        text-red-500
+      "
+                            >
+
+                              {
+                                validateSqlName(
+                                  field.name,
+
+                                  table.fields.map(
+                                    (f) => f.name
+                                  )
+                                ).error
+                              }
+
+                            </p>
+
+                          )}
+
+                      </div>
                       <div
                         className="
                           text-xs
                           text-muted-foreground
                         "
                       >
-                        {field.type}
+                        <select
+                          value={field.type}
+                          onChange={(e) => {
+
+                            const updated =
+                              structuredClone(
+                                preview
+                              );
+
+                            updated.schema.tables[0]
+                              .fields[index]
+                              .type =
+                              e.target.value;
+
+                            setDeployError("");
+
+                            setPreview(updated);
+                          }}
+                        >
+
+                          <option value="text">
+                            text
+                          </option>
+
+                          <option value="number">
+                            number
+                          </option>
+
+                          <option value="boolean">
+                            boolean
+                          </option>
+
+                          <option value="date">
+                            date
+                          </option>
+
+                        </select>
                       </div>
 
                     </th>
@@ -523,15 +741,15 @@ export default function
       </CardContent>
       {deployError && (
 
-        <p
+        <pre
           className="
       text-sm
       text-red-500
-      mb-4
+      whitespace-pre-wrap
     "
         >
           {deployError}
-        </p>
+        </pre>
 
       )}
     </Card>

@@ -133,6 +133,7 @@ export function validateSchemaStructure(
         "text",
         "integer",
         "boolean",
+        "number",
         "uuid",
         "timestamp",
         "date",

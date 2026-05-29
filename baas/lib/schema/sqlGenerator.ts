@@ -1,8 +1,8 @@
 import { Schema }
-from "@/types/schema";
+  from "@/types/schema";
 
 import { getPhysicalTableName }
-from "./getPhysicalTableName";
+  from "./getPhysicalTableName";
 
 export function generateSQL(
   schema: Schema,
@@ -22,10 +22,31 @@ export function generateSQL(
 
       const fields =
         table.fields
-          .map(
-            (field) =>
-              `${field.name} ${field.type.toUpperCase()}`
-          )
+          .map((field) => {
+
+            let sqlType = "TEXT";
+
+            switch (field.type) {
+
+              case "number":
+                sqlType = "NUMERIC";
+                break;
+
+              case "text":
+                sqlType = "TEXT";
+                break;
+
+              case "boolean":
+                sqlType = "BOOLEAN";
+                break;
+
+              case "date":
+                sqlType = "DATE";
+                break;
+            }
+
+            return `${field.name} ${sqlType}`;
+          })
           .join(", ");
 
       const query = `
