@@ -1,19 +1,12 @@
 "use client";
 
-import { useState }
-from "react";
+import { useState } from "react";
 
-import { useRouter }
-from "next/navigation";
+import { useRouter } from "next/navigation";
 
-import { Button }
-from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
-import { Input }
-from "@/components/ui/input";
-
-import { saveToken }
-from "@/lib/frontend/auth";
+import { Input } from "@/components/ui/input";
 
 export default function SignupForm() {
 
@@ -32,6 +25,9 @@ export default function SignupForm() {
   const [error, setError] =
     useState("");
 
+  const [success, setSuccess] =
+    useState(false);
+
   async function handleSignup(
     e: React.FormEvent
   ) {
@@ -40,7 +36,6 @@ export default function SignupForm() {
 
     setError("");
 
-    // Validation
     if (!email.trim()) {
       setError("Email is required");
       return;
@@ -50,7 +45,6 @@ export default function SignupForm() {
       setError(
         "Password is required"
       );
-
       return;
     }
 
@@ -58,7 +52,6 @@ export default function SignupForm() {
       setError(
         "Password must be at least 6 characters"
       );
-
       return;
     }
 
@@ -97,22 +90,7 @@ export default function SignupForm() {
         return;
       }
 
-      if (
-        data.session?.access_token
-      ) {
-
-        saveToken(
-          data.session.access_token
-        );
-
-        router.push(
-          "/dashboard"
-        );
-
-      } else {
-
-        router.push("/login");
-      }
+      setSuccess(true);
 
     } catch (error) {
 
@@ -128,6 +106,80 @@ export default function SignupForm() {
     }
   }
 
+  if (success) {
+
+    return (
+      <div
+        className="
+          space-y-6
+          text-center
+        "
+      >
+        <div
+          className="
+            text-5xl
+          "
+        >
+          ✓
+        </div>
+
+        <div className="space-y-2">
+
+          <h2
+            className="
+              text-3xl
+              font-semibold
+              text-white
+            "
+          >
+            Verify Your Email
+          </h2>
+
+          <p
+            className="
+              text-white/60
+              leading-relaxed
+            "
+          >
+            We've sent a verification
+            link to
+          </p>
+
+          <p
+            className="
+              font-medium
+              text-white
+            "
+          >
+            {email}
+          </p>
+
+          <p
+            className="
+              text-sm
+              text-white/40
+            "
+          >
+            Open your inbox and click
+            the verification link
+            before logging in.
+          </p>
+
+        </div>
+
+        <Button
+          type="button"
+          className="w-full"
+          onClick={() =>
+            router.push("/login")
+          }
+        >
+          Go To Login
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <form
       onSubmit={handleSignup}
@@ -136,23 +188,68 @@ export default function SignupForm() {
       "
     >
 
-      <Input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) =>
-          setEmail(e.target.value)
-        }
-      />
+      <div className="space-y-2">
 
-      <Input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) =>
-          setPassword(e.target.value)
-        }
-      />
+        <label
+          className="
+            py-3
+            pl-3
+            text-base
+            font-medium
+            text-white/90
+          "
+        >
+          Email
+        </label>
+
+        <Input
+          className="mt-1"
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+        />
+
+      </div>
+
+      <div className="space-y-2">
+
+        <label
+          className="
+            py-3
+            pl-3
+            text-base
+            font-medium
+            text-white/90
+          "
+        >
+          Password
+        </label>
+
+        <Input
+          className="mt-1"
+          type="password"
+          placeholder="Create a password"
+          value={password}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+        />
+
+        <p
+          className="
+            pl-3
+            text-sm
+            text-white/50
+          "
+        >
+          Must contain at least
+          6 characters.
+        </p>
+
+      </div>
 
       {error && (
         <p
@@ -172,8 +269,55 @@ export default function SignupForm() {
       >
         {loading
           ? "Creating account..."
-          : "Signup"}
+          : "Create Account"}
       </Button>
+
+      <div
+        className="
+          flex
+          items-center
+          gap-4
+        "
+      >
+        <div className="h-px flex-1 bg-white/60" />
+
+        <span
+          className="
+            text-sm
+            text-white/60
+          "
+        >
+          OR
+        </span>
+
+        <div className="h-px flex-1 bg-white/60" />
+      </div>
+
+      <div
+        className="
+          text-center
+          text-sm
+          text-white/60
+        "
+      >
+        Already have an account?
+
+        <button
+          type="button"
+          onClick={() =>
+            router.push("/login")
+          }
+          className="
+            ml-2
+            text-base
+            font-medium
+            text-white
+            hover:text-white/60
+          "
+        >
+          Login
+        </button>
+      </div>
 
     </form>
   );

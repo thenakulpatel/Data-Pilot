@@ -1,8 +1,6 @@
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 
 export default function AuthCard({
@@ -12,32 +10,49 @@ export default function AuthCard({
   title: string;
   children: React.ReactNode;
 }) {
-
   return (
     <Card
       className="
-        w-full
-        max-w-md
-      "
+    glass-card
+    mx-auto
+    w-full
+    max-w-xl
+    p-6
+    sm:p-8
+  "
     >
-
-      <CardHeader>
-
-        <CardTitle
+      <CardContent
+        className="
+          space-y-8
+          pt-2
+        "
+      >
+        <div
           className="
-            text-2xl
-            font-semibold
+            flex
+            flex-col
+            items-center
+            text-center
+            space-y-4
           "
         >
-          {title}
-        </CardTitle>
 
-      </CardHeader>
+          <div className="space-y-2">
+            <h1
+              className="
+                text-4xl
+    font-bold
+    tracking-tight
+    text-white
+              "
+            >
+              {title}
+            </h1>
+          </div>
+        </div>
 
-      <CardContent>
         {children}
       </CardContent>
-
     </Card>
   );
 }
