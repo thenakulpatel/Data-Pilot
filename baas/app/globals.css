@@ -127,12 +127,27 @@
 
     background:
       radial-gradient(circle at top left,
-        rgba(202, 2, 2, 0.9),
-        transparent 35%),
+        rgba(0, 0, 0, 0.9),
+        transparent 60%),
+      radial-gradient(circle at bottom left,
+        rgba(0, 0, 0, 0.9),
+        transparent 60%),
       radial-gradient(circle at bottom right,
-        rgba(11, 72, 133, 0.8),
-        transparent 40%),
-      #021a39;
+        rgba(0, 0, 0, 0.9),
+        transparent 60%),
+      radial-gradient(circle at top right,
+        rgba(0, 0, 0, 0.9),
+        transparent 60%),
+      radial-gradient(circle at top center,
+        rgba(0, 0, 0, 0.9),
+        transparent 60%),
+      radial-gradient(circle at bottom center,
+        rgba(0, 0, 0, 0.9),
+        transparent 60%),
+          /* radial-gradient(circle,
+        rgba(0, 0, 0, 0.9),
+        transparent 80%), */
+      #000000;
   }
 
   html {
@@ -174,7 +189,7 @@
 
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      2px  rgba(210, 210, 211, 0.04);
+      2px rgba(210, 210, 211, 0.04);
   }
 
   .liquid-shadow {

@@ -40,6 +40,8 @@ import {
 import ApiKeyCard
   from "./ApiKeyCard";
 
+import { Card, CardContent } from "../ui/card";
+
 
 interface Props {
   projectId: string;
@@ -129,36 +131,137 @@ export default function
 
       <div
         className="
-          flex
-          items-center
-          justify-between
-        "
+    flex
+    flex-col
+    gap-4
+  "
       >
 
-        <h1
-          className="
-            text-3xl
-            font-bold
-          "
-        >
-          Project Workspace
-        </h1>
+        <div>
 
-        <Button
-          onClick={() =>
-            setShowUploader(
-              !showUploader
-            )
-          }
-        >
-          Create New Table
-        </Button>
+          <p
+            className="
+        text-sm
+        uppercase
+        tracking-widest
+        text-white/40
+      "
+          >
+            Project Workspace
+          </p>
+
+          <h1
+            className="
+        mt-2
+        text-5xl
+        font-bold
+        text-white
+      "
+          >
+            Manage Tables
+          </h1>
+
+        </div>
 
       </div>
 
       <ApiKeyCard
         apiKey={apiKey}
       />
+
+      <Card>
+
+        <CardContent
+          className="
+      p-6
+    "
+        >
+
+          <h2
+            className="
+        text-2xl
+        font-semibold
+      "
+          >
+            Create Table
+          </h2>
+
+          <p
+            className="
+        mt-2
+        text-white/50
+      "
+          >
+            Choose how you want to create
+            your next table.
+          </p>
+
+          <div
+            className="
+        mt-6
+
+        grid
+        gap-4
+
+        md:grid-cols-3
+      "
+          >
+
+            {/* Upload */}
+
+            <button
+              onClick={() => {
+
+                setShowUploader(true);
+
+              }}
+              className="
+          rounded-3xl
+          border
+          border-white/10
+          bg-white/[0.03]
+          p-6
+          text-left
+        "
+            >
+              Upload CSV/XLSX
+            </button>
+
+            {/* AI */}
+
+            <button
+              className="
+          rounded-3xl
+          border
+          border-white/10
+          bg-white/[0.03]
+          p-6
+          text-left
+        "
+            >
+              Generate with AI
+            </button>
+
+            {/* Empty */}
+
+            <button
+              className="
+          rounded-3xl
+          border
+          border-white/10
+          bg-white/[0.03]
+          p-6
+          text-left
+        "
+            >
+              Empty Table
+            </button>
+
+          </div>
+
+        </CardContent>
+
+      </Card>
 
       <AiSchemaGenerator
         projectId={projectId}

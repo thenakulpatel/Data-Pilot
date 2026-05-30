@@ -1,25 +1,25 @@
 "use client";
 
 import { useState }
-from "react";
+  from "react";
 
 import { Button }
-from "@/components/ui/button";
+  from "@/components/ui/button";
 
 import { Input }
-from "@/components/ui/input";
+  from "@/components/ui/input";
 
 import { getToken }
-from "@/lib/frontend/auth";
+  from "@/lib/frontend/auth";
 
 interface Props {
   onProjectCreated: () => void;
 }
 
 export default function
-CreateProjectForm({
-  onProjectCreated,
-}: Props) {
+  CreateProjectForm({
+    onProjectCreated,
+  }: Props) {
 
   const [name, setName] =
     useState("");
@@ -105,42 +105,94 @@ CreateProjectForm({
   }
 
   return (
-    <form
-      onSubmit={handleCreate}
+    <div
       className="
-        flex
-        gap-3
-      "
+      rounded-[32px]
+      border
+      border-white/10
+
+      bg-white/[0.03]
+
+      p-6
+      md:p-6
+    "
     >
+      <div className="mb-6">
 
-      <Input
-        placeholder="Project name"
-        value={name}
-        onChange={(e) =>
-          setName(e.target.value)
-        }
-      />
+        <h2
+          className="
+          text-2xl
+          font-semibold
+          text-white
+        "
+        >
+          Create Project
+        </h2>
 
-      <Button
-        type="submit"
-        disabled={loading}
-      >
-        {loading
-          ? "Creating..."
-          : "Create"}
-      </Button>
-
-      {error && (
         <p
           className="
-            text-sm
-            text-red-500
-          "
+          mt-2
+          text-sm
+          text-white/60
+        "
         >
-          {error}
+          Generate a new backend workspace,
+          database and API infrastructure.
         </p>
-      )}
 
-    </form>
+      </div>
+
+      <form
+        onSubmit={handleCreate}
+        className="
+        space-y-4
+      "
+      >
+        <Input
+          placeholder="Enter project name"
+          value={name}
+          onChange={(e) =>
+            setName(e.target.value)
+          }
+        />
+
+        {error && (
+          <div
+            className="
+            rounded-2xl
+
+            border
+            border-red-500/20
+
+            bg-red-500/10
+
+            px-4
+            py-3
+
+            text-sm
+            text-red-300
+          "
+          >
+            {error}
+          </div>
+        )}
+
+        <div
+          className="
+          flex
+          justify-end
+        "
+        >
+          <Button
+            type="submit"
+            disabled={loading}
+          >
+            {loading
+              ? "Creating..."
+              : "Create Project"}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }

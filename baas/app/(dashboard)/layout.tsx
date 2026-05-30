@@ -1,7 +1,10 @@
 import DashboardGuard
 from "@/components/dashboard/DashboardGuard";
 
-export default function DashboardLayout({
+import AppNavbar
+from "@/components/navbar/AppNavbar";
+
+export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -9,7 +12,18 @@ export default function DashboardLayout({
 
   return (
     <DashboardGuard>
-      {children}
+
+      <AppNavbar />
+
+      <main
+        className="
+          pt-24
+          pb-10
+        "
+      >
+        {children}
+      </main>
+
     </DashboardGuard>
   );
 }
