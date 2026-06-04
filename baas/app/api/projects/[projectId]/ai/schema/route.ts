@@ -110,7 +110,7 @@ export async function POST(
           "llama-3.1-8b-instant",
 
         temperature: 0,
-
+        response_format: { type: "json_object" },
         messages: [
 
           {
@@ -120,8 +120,8 @@ export async function POST(
 
 You are an expert backend architect.
 
-Your job is to generate production-style database schemas
-for backend API systems,only single table.
+Your job is to generate production-style database schema table
+for backend API systems.
 
 Return ONLY valid JSON.
 
@@ -171,33 +171,12 @@ BEHAVIOR RULES
 2. The table should represent the main
    entity described by the user.
 
-
 4. Prefer practical backend design.
 
 5. Keep schemas MVP-friendly.
 
 6. Avoid excessive complexity.
 
-7. The project may already contain
-   existing tables.
-
-8. Generate ONLY the new tables needed.
-
-9. Always include created_at in table column having current time.
-
-Some examples :
-
-Employee management:
-- employees
-
-IPL player management:
-- players
-
-Product catalog:
-- products
-
-Student management:
-- students
 
 ================================================
 STRICT RULES
@@ -263,6 +242,20 @@ STRICT RULES
         "boolean",
         "date",
       ];
+      if (
+        schema.tables.length !== 1
+      ) {
+
+        return NextResponse.json(
+          {
+            error:
+              "AI generated multiple tables. Only one table is currently supported."
+          },
+          {
+            status: 400
+          }
+        );
+      }
 
       schema.tables =
         schema.tables.map(
@@ -360,6 +353,7 @@ STRICT RULES
             "llama-3.1-8b-instant",
 
           temperature: 0.7,
+          response_format: { type: "json_object" },
 
           messages: [
 
@@ -396,12 +390,13 @@ RULES:
               role: "user",
 
               content: `
+              Context Prompt: "${prompt}"
 
-Schema:
+          Schema:
 
-${JSON.stringify(schema)}
+          ${JSON.stringify(schema)}
 
-`,
+          `,
             },
           ],
         });

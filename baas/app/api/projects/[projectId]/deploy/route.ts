@@ -6,8 +6,8 @@ import {
 import { pool }
   from "@/lib/db";
 
-  import { sanitizeSqlName }
-from "@/lib/sql/sanitizeSqlName";
+import { sanitizeSqlName }
+  from "@/lib/sql/sanitizeSqlName";
 
 import { authorizeProject }
   from "@/lib/auth/authorizeProject";
@@ -235,6 +235,13 @@ export async function POST(
                 `$${index + 1}`
             )
             .join(", ");
+        console.log(
+          await pool.query(`
+    SELECT column_name
+    FROM information_schema.columns
+    WHERE table_name = '${physicalTableName}'
+  `)
+        );
 
         await pool.query(
           `
