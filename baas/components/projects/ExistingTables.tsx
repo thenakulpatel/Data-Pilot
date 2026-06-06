@@ -1,6 +1,13 @@
-import { Button }
-from "@/components/ui/button";
+'use client';
 
+import { Button }
+  from "@/components/ui/button";
+
+import DeleteTableButton
+  from "./DeleteTableButton";
+
+import { useRouter }
+  from "next/navigation";
 
 import { authenticatedFetch }
   from "@/lib/frontend/authenticatedFetch";
@@ -18,18 +25,20 @@ import {
 
 interface Props {
 
+  projectId: string;
+
   schema: Schema | null;
 
-  onOpenTable: (
-    tableName: string
-  ) => void;
+  onRefresh: () => void;
 }
 
 export default function
-ExistingTables({
-  schema,
-  onOpenTable,
-}: Props) {
+  ExistingTables({
+    projectId,
+    schema,
+    onRefresh,
+  }: Props) {
+  const router = useRouter();
 
   if (
     !schema ||
@@ -87,15 +96,30 @@ ExistingTables({
                 {table.name}
               </CardTitle>
 
-              <Button
-                onClick={() =>
-                  onOpenTable(
-                    table.name
-                  )
-                }
+              <div
+                className="
+    flex
+    gap-2
+  "
               >
-                Open Table
-              </Button>
+
+                <Button
+                  onClick={() =>
+                    router.push(
+                      `/projects/${projectId}/tables/${table.name}`
+                    )
+                  }
+                >
+                  Open
+                </Button>
+
+                <DeleteTableButton
+                  projectId={projectId}
+                  tableName={table.name}
+                  onDeleted={onRefresh}
+                />
+
+              </div>
 
             </CardHeader>
 

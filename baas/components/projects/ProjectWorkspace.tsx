@@ -64,11 +64,6 @@ export default function
       null
     );
 
-  const [selectedTable,
-    setSelectedTable] =
-    useState<string | null>(
-      null
-    );
 
   const [showUploader,
     setShowUploader] =
@@ -269,10 +264,9 @@ export default function
       />
 
       <ExistingTables
+        projectId={projectId}
         schema={schema}
-        onOpenTable={
-          setSelectedTable
-        }
+        onRefresh={fetchSchema}
       />
 
       {showUploader && (
@@ -303,16 +297,6 @@ export default function
             // Hide uploader
             setShowUploader(false);
           }}
-        />
-
-      )}
-      {selectedTable && (
-
-        <LiveTableViewer
-          projectId={projectId}
-          tableName={
-            selectedTable
-          }
         />
 
       )}
