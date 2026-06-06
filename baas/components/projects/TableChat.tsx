@@ -15,6 +15,15 @@ import { Button }
 import { authenticatedFetch }
   from "@/lib/frontend/authenticatedFetch";
 
+type Message = {
+
+  role:
+  | "user"
+  | "assistant";
+
+  content: string;
+};
+
 interface Props {
 
   projectId: string;
@@ -36,9 +45,11 @@ export default function
     setLoading] =
     useState(false);
 
-  const [answer,
-    setAnswer] =
-    useState("");
+  const [messages,
+    setMessages] =
+    useState<Message[]>(
+      []
+    );
 
   const [error,
     setError] =
@@ -48,11 +59,16 @@ export default function
 
     setError("");
 
-    setAnswer("");
-
     try {
 
       setLoading(true);
+
+      const userMessage = {
+
+        role: "user",
+
+        content: question,
+      };
 
       const response =
         await authenticatedFetch(
@@ -68,6 +84,7 @@ export default function
             body: JSON.stringify({
               tableName,
               question,
+              messages
             }),
           }
         );
@@ -84,9 +101,25 @@ export default function
         return;
       }
 
-      setAnswer(
-        data.answer
+      setMessages(
+        previous => [
+
+          ...previous,
+
+          {
+            role: "user",
+            content: question,
+          },
+
+          {
+            role: "assistant",
+            content:
+              data.answer,
+          },
+        ]
       );
+
+      setQuestion("");
 
     } catch (error) {
 
@@ -148,19 +181,56 @@ Ask about your data...
           }
         </Button>
 
-        {answer && (
+        <div
+          className="
+    h-[400px]
+    overflow-y-auto
+    border
+    rounded-lg
+    p-4
+    space-y-3
+    bg-background
+  "
+        >
 
-          <div
-            className="
-              rounded-md
+          {messages.map(
+            (
+              message,
+              index
+            ) => (
+
+              <div
+                key={index}
+                className={
+
+                  message.role ===
+                    "user"
+
+                    ? `
+              ml-auto
+              max-w-[80%]
+              rounded-lg
+              bg-blue-500/10
+              p-3
+            `
+
+                    : `
+              mr-auto
+              max-w-[80%]
+              rounded-lg
               border
-              p-4
-            "
-          >
-            {answer}
-          </div>
+              p-3
+            `
+                }
+              >
 
-        )}
+                {message.content}
+
+              </div>
+            )
+          )}
+
+        </div>
         {error && (
 
           <div

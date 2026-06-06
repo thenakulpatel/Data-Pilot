@@ -90,11 +90,14 @@ export async function POST(
         const tableName =
             file.name.replace(".csv", "");
 
-        const schema =
-            csvToSchema(
-                tableName,
-                records
-            );
+       const result =
+  csvToSchema(
+    tableName,
+    records
+  );
+
+const schema =
+  result.schema;
 
         // Store schema
         await pool.query(

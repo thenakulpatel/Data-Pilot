@@ -6,6 +6,9 @@ import {
 import { pool }
   from "@/lib/db";
 
+import { indexTable }
+  from "@/lib/rag/indexTable";
+
 import { sanitizeSqlName }
   from "@/lib/sql/sanitizeSqlName";
 
@@ -252,7 +255,19 @@ export async function POST(
           values
         );
       }
+      await indexTable({
+
+        projectId,
+
+        tableName:
+          table.name,
+
+        physicalTableName,
+
+      });
     }
+
+
 
     // =====================================================
     // UPDATE PROJECT SCHEMA

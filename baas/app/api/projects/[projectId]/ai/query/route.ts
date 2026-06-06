@@ -6,8 +6,18 @@ import {
 import Groq
     from "groq-sdk";
 
+import {
+    searchRows,
+}
+    from "@/lib/rag/searchRows";
+
 import { pool }
     from "@/lib/db";
+
+import {
+    classifyIntent,
+}
+    from "@/lib/ai/classifyIntent";
 
 import { authorizeApiAccess }
     from "@/lib/auth/authorizeApiAccess";
@@ -81,7 +91,129 @@ export async function POST(
         const {
             tableName,
             question,
+            messages = [],
         } = body;
+
+        const intent =
+            await classifyIntent(
+                question
+            );
+
+        console.log(
+            "INTENT:",
+            intent
+        );
+
+        // ==========================================
+        // VECTOR SEARCH
+        // ==========================================
+
+        if (
+            intent === "vector"
+        ) {
+
+            const rows =
+                await searchRows({
+
+                    projectId,
+
+                    tableName,
+
+                    question,
+
+                    limit: 5,
+                });
+
+            // console.log(
+            //     JSON.stringify(rows, null, 2)
+            // );
+
+            if (
+                rows.length === 0
+            ) {
+
+                return NextResponse.json({
+
+                    answer:
+                        "I could not find any relevant information.",
+
+                    intent,
+                });
+            }
+
+            const contextText =
+                rows
+                    .map(
+                        (
+                            row: any,
+                            index: number
+                        ) =>
+
+                            `Record ${index + 1}:
+${JSON.stringify(
+                                row.row_data
+                            )}`
+                    )
+                    .join("\n\n");
+
+            const completion =
+                await groq.chat.completions.create({
+
+                    model:
+                        "llama-3.1-8b-instant",
+
+                    temperature: 0,
+
+                    messages: [
+
+                        {
+                            role: "system",
+
+                            content: `
+
+You are a database assistant.
+
+Answer ONLY using
+the provided records.
+
+If the answer
+cannot be determined,
+say:
+
+"I could not find that information."
+
+`,
+                        },
+
+                        {
+                            role: "user",
+
+                            content: `
+
+Question:
+
+${question}
+
+Records:
+
+${contextText}
+
+`,
+                        },
+                    ],
+                });
+
+            return NextResponse.json({
+
+                answer:
+                    completion
+                        .choices[0]
+                        .message
+                        .content,
+
+                intent,
+            });
+        }
 
         if (
             !tableName ||
@@ -200,16 +332,69 @@ export async function POST(
                 )
                 .join("\n");
 
+        const writeKeywords = [
+
+            "add",
+            "insert",
+            "create",
+            "delete",
+            "remove",
+            "update",
+            "edit",
+            "modify",
+
+        ];
+        const normalizedQuestion =
+            question.toLowerCase();
+
+        const isWriteOperation =
+            writeKeywords.some(
+                keyword =>
+                    normalizedQuestion.includes(
+                        keyword
+                    )
+            );
+
+        if (isWriteOperation) {
+
+            return NextResponse.json(
+                {
+                    error:
+                        "This assistant supports data querying only."
+                },
+                {
+                    status: 400
+                }
+            );
+        }
+        const history =
+
+            messages
+                .slice(-10)
+
+                .map(
+
+                    (
+                        message: {
+                            role: string;
+                            content: string;
+                        }
+                    ) =>
+
+                        `${message.role}: ${message.content}`
+                )
+
+                .join("\n");
         // ================================================
         // GENERATE SQL
         // ================================================
         const sampleRows =
             await pool.query(
                 `
-    SELECT *
-    FROM ${physicalTableName}
-    LIMIT 3
-    `
+                    SELECT *
+                    FROM ${physicalTableName}
+                    LIMIT 3
+                    `
             );
 
         const sqlCompletion =
@@ -227,49 +412,53 @@ export async function POST(
 
                         content: `
 
-You are a PostgreSQL expert.
+                    You are a PostgreSQL expert.
 
-Generate ONLY a PostgreSQL SELECT query.
+                    Generate ONLY a PostgreSQL SELECT query.
 
-Physical table:
+                    Physical table:
 
-${physicalTableName}
+                    ${physicalTableName}
 
-Columns:
+                    Columns:
 
-${fields}
+                    ${fields}
 
-Sample Data:
+                    Sample Data:
 
-${JSON.stringify(
+                    ${JSON.stringify(
                             sampleRows.rows,
                             null,
                             2
-                        )}
+                        )}  
 
-Rules:
+                    Rules:
 
-- Return ONLY SQL
-- Only SELECT queries
-- Never INSERT
-- Never UPDATE
-- Never DELETE
-- Never DROP
-- Never ALTER
-- Never CREATE
-- Never TRUNCATE
-- No markdown
-- No explanation
-- Use exact column names
+                    - Return ONLY SQL
+                    - Only SELECT queries
+                    - Never INSERT
+                    - Never UPDATE
+                    - Never DELETE
+                    - Never DROP
+                    - Never ALTER
+                    - Never CREATE
+                    - Never TRUNCATE
+                    - No markdown
+                    - No explanation
+                    - Use exact column names
 
-`,
+                    `,
                     },
 
                     {
                         role: "user",
+                        content: `
+                        Conversation History:
+                        ${history}
+                        Current Question:
+                        ${question}
 
-                        content:
-                            question,
+                        `,
                     },
                 ],
             });

@@ -3,6 +3,9 @@ import { NextResponse, NextRequest } from "next/server";
 import { authorizeProject }
     from "@/lib/auth/authorizeProject";
 
+import * as XLSX
+    from "xlsx";
+
 import { parseXLSX }
     from "@/lib/input/parsers/xlsxParser";
 
@@ -83,7 +86,8 @@ export async function POST(
         if (!validation.valid) {
             return NextResponse.json(
                 {
-                    error: validation.error,
+                    error:
+                        validation.error,
                 },
                 {
                     status: 400,
@@ -91,9 +95,36 @@ export async function POST(
             );
         }
 
-        // Infer schema
+        // ================================================
+        // EXTRACT FIRST SHEET
+        // ================================================
+
+        const sheetName =
+            workbook.SheetNames[0];
+
+        const worksheet =
+            workbook.Sheets[sheetName];
+
+        const rows =
+            XLSX.utils.sheet_to_json(
+                worksheet
+            );
+
+        // ================================================
+        // INFER SCHEMA
+        // ================================================
+
+        const result =
+            xlsxToSchema(
+                file.name.replace(
+                    ".xlsx",
+                    ""
+                ),
+                rows as Record<string, any>[]
+            );
+
         const schema =
-            xlsxToSchema(workbook);
+            result.schema;
 
         // Store schema
         await pool.query(
