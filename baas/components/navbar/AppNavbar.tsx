@@ -6,6 +6,18 @@ import { usePathname } from "next/navigation";
 
 import { logout } from "@/lib/frontend/logout";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 export default function AppNavbar() {
 
     const pathname =
@@ -141,31 +153,76 @@ export default function AppNavbar() {
 
                 {/* Right */}
 
-                <button
-                    onClick={logout}
-                    className="
-            rounded-full
+                <AlertDialog>
 
-            border
-            border-white/10
+                    <AlertDialogTrigger asChild>
 
-            bg-white/5
+                        <button
+                            className="
+        rounded-full
+        border
+        border-white/10
+        bg-white/5
+        px-5
+        py-2
+        text-sm
+        font-medium
+        text-white
+        transition-all
+        hover:bg-red-500/15
+        hover:text-red-300
+      "
+                        >
+                            Logout
+                        </button>
 
-            px-5
-            py-2
+                    </AlertDialogTrigger>
 
-            text-sm
-            font-medium
-            text-white
+                    <AlertDialogContent
+                        className="
+      border-white/10
+      bg-zinc-950
+      text-white
+    "
+                    >
 
-            transition-all
+                        <AlertDialogHeader>
 
-            hover:bg-red-500/15
-            hover:text-red-300
-          "
-                >
-                    Logout
-                </button>
+                            <AlertDialogTitle>
+                                Logout?
+                            </AlertDialogTitle>
+
+                            <AlertDialogDescription
+                                className="
+          text-white/60
+        "
+                            >
+                                Are you sure you want to logout from your account?
+                            </AlertDialogDescription>
+
+                        </AlertDialogHeader>
+
+                        <AlertDialogFooter>
+
+                            <AlertDialogCancel>
+                                Cancel
+                            </AlertDialogCancel>
+
+                            <AlertDialogAction
+                                onClick={logout}
+                                className="
+          bg-red-600
+          hover:bg-red-700
+        "
+                            >
+                                Logout
+                            </AlertDialogAction>
+
+                        </AlertDialogFooter>
+
+                    </AlertDialogContent>
+
+                </AlertDialog>
             </div>
         </header>
     );
