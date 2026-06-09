@@ -15,6 +15,9 @@ import { Input }
 import { saveToken }
   from "@/lib/frontend/auth";
 
+import GoogleLoginButton
+  from "@/components/auth/GoogleLoginButton";
+
 export default function LoginForm() {
 
   const router =
@@ -131,7 +134,7 @@ export default function LoginForm() {
           Email
         </label>
         <Input
-        className="mt-1"
+          className="mt-1"
           type="email"
           placeholder="Enter your email"
           value={email}
@@ -147,7 +150,7 @@ export default function LoginForm() {
           Password
         </label>
         <Input
-         className="mt-1"
+          className="mt-1"
           type="password"
           placeholder="Enter your password"
           value={password}
@@ -212,7 +215,7 @@ export default function LoginForm() {
 
         <div className="h-px flex-1 bg-white/60" />
       </div>
-
+      <GoogleLoginButton />
       <div
         className="
     text-center

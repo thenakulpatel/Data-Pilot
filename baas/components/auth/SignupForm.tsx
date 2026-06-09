@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
 
+import GoogleLoginButton
+  from "@/components/auth/GoogleLoginButton";
+
 export default function SignupForm() {
 
   const router =
@@ -292,7 +295,7 @@ export default function SignupForm() {
 
         <div className="h-px flex-1 bg-white/60" />
       </div>
-
+      <GoogleLoginButton />
       <div
         className="
           text-center
