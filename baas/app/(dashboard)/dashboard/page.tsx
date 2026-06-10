@@ -1,6 +1,3 @@
-import LogoutButton
-  from "@/components/dashboard/LogoutButton";
-
 import ProjectsSection
   from "@/components/projects/ProjectsSection";
 
@@ -9,117 +6,59 @@ export default function DashboardPage() {
   return (
     <main
       className="
-    mx-auto
-    max-w-7xl
+        mx-auto
+        max-w-7xl
 
-    px-6
-    py-10
+        px-6
+        py-1
 
-    space-y-10
-  "
+        space-y-12
+      "
     >
-
-
-      {/* <LogoutButton /> */}
 
       <section
         className="
-    space-y-6
-  "
+          max-w-4xl
+        "
       >
 
-        <div>
+        <h1
+          className="
+            mt-8
 
-          <p
-            className="
-        text-sm
-        uppercase
-        tracking-widest
+            text-6xl
+            font-bold
 
-        text-white/40
-      "
-          >
-            Backend Infrastructure Platform
-          </p>
+            leading-[0.95]
+            tracking-tight
 
-          <h1
-            className="
-        mt-2
+            text-white
+          "
+        >
+          Build and manage
+          <br />
+          your backend.
+        </h1>
 
-        text-5xl
-        font-bold
+        <p
+          className="
+            mt-8
 
-        text-white
-      "
-          >
-            Your Projects
-          </h1>
+            max-w-2xl
 
-          <p
-            className="
-        mt-4
+            text-lg
+            leading-relaxed
 
-        max-w-2xl
-
-        text-lg
-
-        text-white/50
-      "
-          >
-            Create, manage and deploy backend
-            infrastructure from a single workspace.
-          </p>
-
-        </div>
+            text-white/55
+          "
+        >
+          Create projects, generate schemas,
+          deploy APIs and manage your data
+          from a single workspace.
+        </p>
 
       </section>
-      <div
-        className="
-    flex
-    flex-wrap
-    gap-3
-  "
-      >
 
-        <div
-          className="
-      rounded-full
-
-      border
-      border-white/10
-
-      bg-white/[0.03]
-
-      px-4
-      py-2
-
-      text-sm
-      text-white/70
-    "
-        >
-          7 Projects
-        </div>
-
-        <div
-          className="
-      rounded-full
-
-      border
-      border-white/10
-
-      bg-white/[0.03]
-
-      px-4
-      py-2
-
-      text-sm
-      text-white/70
-    "
-        >
-          12 Tables
-        </div>
-
-      </div>
       <ProjectsSection />
 
     </main>

@@ -1,33 +1,58 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+function Input({
+  className,
+  type,
+  ...props
+}: React.ComponentProps<"input">) {
   return (
     <input
       type={type}
       data-slot="input"
       className={cn(
-        "flex h-12 w-full min-w-0 rounded-full",
-        "glass-input",
-        "px-5",
-        "text-sm text-white",
+        `
+        h-14
+        w-full
 
-        "placeholder:text-white",
+        rounded-2xl
 
-        "transition-all duration-200",
+        border
+        border-white/10
 
-        "focus-visible:outline-none",
-        "focus-visible:ring-4",
-        "focus-visible:ring-black/[0.04]",
+        bg-white/[0.05]
 
-        "disabled:pointer-events-none",
-        "disabled:cursor-not-allowed",
-        "disabled:opacity-50", className
+        backdrop-blur-2xl
+
+        px-5
+
+        text-[15px]
+        text-white
+
+        shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]
+
+        placeholder:text-white/35
+
+        transition-all
+        duration-300
+
+        focus:outline-none
+
+        focus:border-white/20
+
+        focus:bg-white/[0.08]
+
+        focus:shadow-[0_0_0_4px_rgba(255,255,255,0.05)]
+
+        disabled:pointer-events-none
+        disabled:opacity-50
+        `,
+        className
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Input }
+export { Input };

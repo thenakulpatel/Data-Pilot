@@ -105,60 +105,116 @@ export default function
   }
 
   return (
+  <div
+    className="
+      glass-card
+      rounded-[32px]
+      p-2
+      md:p-8
+    "
+  >
     <div
       className="
-      rounded-[32px]
-      border
-      border-white/10
-
-      bg-white/[0.03]
-
-      p-6
-      md:p-6
-    "
+        flex
+        items-start
+        justify-between
+        gap-6
+      "
     >
-      <div className="mb-6">
+
+      <div>
 
         <h2
           className="
-          text-2xl
-          font-semibold
-          text-white
-        "
+            text-3xl
+            font-bold
+
+            text-white
+          "
         >
           Create Project
         </h2>
 
         <p
           className="
-          mt-2
-          text-sm
-          text-white/60
-        "
+            mt-3
+
+            max-w-xl
+
+            text-white/55
+            leading-relaxed
+          "
         >
-          Generate a new backend workspace,
-          database and API infrastructure.
+          Create a new backend project with
+          database schemas, API generation,
+          authentication and deployment tools.
         </p>
 
       </div>
 
-      <form
-        onSubmit={handleCreate}
+      <div
         className="
-        space-y-4
-      "
+          hidden
+          lg:flex
+
+          h-16
+          w-16
+
+          items-center
+          justify-center
+
+          rounded-2xl
+
+          border
+          border-white/10
+
+          bg-white/[0.04]
+
+          text-2xl
+        "
       >
+        +
+      </div>
+
+    </div>
+
+    <form
+      onSubmit={handleCreate}
+      className="
+        mt-8
+        space-y-5
+      "
+    >
+
+      <div>
+
+        <label
+          className="
+            mb-3
+            block
+
+            text-lg
+            font-medium
+
+            text-white/90
+          "
+        >
+          Project Name
+        </label>
+
         <Input
-          placeholder="Enter project name"
+          placeholder="e.g. Ecommerce Backend"
           value={name}
           onChange={(e) =>
             setName(e.target.value)
           }
         />
 
-        {error && (
-          <div
-            className="
+      </div>
+
+      {error && (
+        <div
+          className="
             rounded-2xl
 
             border
@@ -172,27 +228,29 @@ export default function
             text-sm
             text-red-300
           "
-          >
-            {error}
-          </div>
-        )}
+        >
+          {error}
+        </div>
+      )}
 
-        <div
-          className="
+      <div
+        className="
           flex
           justify-end
         "
+      >
+        <Button
+          type="submit"
+          size="sm"
+          disabled={loading}
         >
-          <Button
-            type="submit"
-            disabled={loading}
-          >
-            {loading
-              ? "Creating..."
-              : "Create Project"}
-          </Button>
-        </div>
-      </form>
-    </div>
-  );
+          {loading
+            ? "Creating..."
+            : "Create Project"}
+        </Button>
+      </div>
+
+    </form>
+  </div>
+);
 }
