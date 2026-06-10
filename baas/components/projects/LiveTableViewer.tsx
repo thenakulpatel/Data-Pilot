@@ -36,7 +36,7 @@ interface Props {
   tableName: string;
 }
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 export default function
   LiveTableViewer({
@@ -193,7 +193,13 @@ export default function
   if (rows.length === 0) {
 
     return (
-      <Card>
+      <Card
+        className="
+    border-white/10
+    bg-white/[0.03]
+    backdrop-blur-xl
+  "
+      >
 
         <CardHeader>
 
@@ -248,19 +254,31 @@ export default function
         tableName={tableName}
       />
 
-      <Card>
-
+      <Card
+        className="
+    border-white/10
+    bg-white/[0.03]
+    backdrop-blur-xl
+    py-3
+    px-4
+  "
+      >
         <CardHeader
           className="
-          flex
-          flex-row
-          items-center
-          justify-between
-        "
+    border-b
+    border-white/10 
+
+  "
         >
 
-          <CardTitle>
-            {tableName}
+          <CardTitle
+            className="
+    text-2xl
+    font-semibold
+    text-white
+  "
+          >
+            Table Records
           </CardTitle>
 
           <div
@@ -385,51 +403,84 @@ export default function
 
           <div
             className="
-            flex
-            items-center
-            justify-between
-            mt-4
-          "
+    mt-8
+
+    flex
+    justify-center
+  "
           >
-
-            <Button
-              variant="outline"
-              disabled={
-                page === 1
-              }
-              onClick={() =>
-                setPage(
-                  page - 1
-                )
-              }
-            >
-              Previous
-            </Button>
-
             <div
               className="
-              text-sm
-            "
+      inline-flex
+
+      items-center
+      gap-2
+
+      rounded-full
+
+      border
+      border-white/10
+
+      bg-white/[0.03]
+
+      p-2
+    "
             >
-              Page {page} of{" "}
-              {totalPages}
+
+              <Button
+                variant="ghost"
+                disabled={page === 1}
+                onClick={() =>
+                  setPage(page - 1)
+                }
+              >
+                ←
+              </Button>
+              {Array.from(
+                { length: totalPages }
+              ).map((_, index) => {
+
+                const pageNumber =
+                  index + 1;
+
+                return (
+                  <button
+                    key={pageNumber}
+                    onClick={() =>
+                      setPage(pageNumber)
+                    }
+                    className={`
+        h-10
+        w-10
+
+        rounded-full
+
+        transition-all
+
+        ${pageNumber === page
+                        ? "bg-white text-black"
+                        : "text-white hover:bg-white/10"
+                      }
+      `}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              <Button
+                variant="ghost"
+                disabled={
+                  page === totalPages
+                }
+                onClick={() =>
+                  setPage(page + 1)
+                }
+              >
+                →
+              </Button>
+
             </div>
-
-            <Button
-              variant="outline"
-              disabled={
-                page ===
-                totalPages
-              }
-              onClick={() =>
-                setPage(
-                  page + 1
-                )
-              }
-            >
-              Next
-            </Button>
-
           </div>
 
         </CardContent>

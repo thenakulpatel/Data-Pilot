@@ -4,6 +4,11 @@ import {
     useState,
 } from "react";
 
+import {
+  Copy,
+  Check,
+} from "lucide-react";
+
 import { Button }
     from "@/components/ui/button";
 
@@ -14,7 +19,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 interface Props {
 
@@ -56,6 +61,26 @@ export default function
 
     const [error, setError] =
         useState("");
+
+        const [copied,
+  setCopied] =
+  useState(false);
+  async function copyEndpoint() {
+
+  await navigator
+    .clipboard
+    .writeText(
+      getUrl()
+    );
+
+  setCopied(true);
+
+  setTimeout(() => {
+
+    setCopied(false);
+
+  }, 2000);
+}
 
     // ===================================================
     // URL
@@ -208,16 +233,50 @@ export default function
 
             : response;
     return (
-        <Card>
+        <Card
+            className="
+    border-white/10
+    bg-white/[0.03]
+    backdrop-blur-xl
+    p-4
+  "
+        >
 
             <CardHeader>
 
-                <CardTitle>
+                <p
+                    className="
+      text-sm
+      uppercase
+      tracking-[0.2em]
+      text-white/40
+    "
+                >
+                    Testing
+                </p>
+
+                <CardTitle
+                    className="
+      mt-2
+      text-2xl
+      font-semibold
+      text-white
+    "
+                >
                     API Playground
                 </CardTitle>
 
-            </CardHeader>
+                <p
+                    className="
+      mt-2
+      text-white/50
+    "
+                >
+                    Test generated endpoints
+                    directly from your dashboard.
+                </p>
 
+            </CardHeader>
             <CardContent
                 className="
           space-y-4
@@ -268,35 +327,109 @@ export default function
             URL
         ============================================= */}
 
-                <div
-                    className="
-            space-y-2
+              <div
+  className="
+    space-y-2
+  "
+>
+
+  <p
+    className="
+      text-sm
+      font-medium
+    "
+  >
+    Endpoint
+  </p>
+
+  <div
+    className="
+      flex
+      items-center
+      gap-3
+    "
+  >
+
+    <code
+      className="
+        flex-1
+
+        rounded-2xl
+
+        border
+        border-white/10
+
+        bg-black/20
+
+        px-4
+        py-4
+
+        text-sm
+        text-white/80
+
+        break-all
+      "
+    >
+      {getUrl()}
+    </code>
+
+    <button
+      onClick={copyEndpoint}
+      className="
+        flex
+
+        h-11
+        w-11
+
+        shrink-0
+
+        items-center
+        justify-center
+
+        rounded-full
+
+        border
+        border-white/10
+
+        bg-white/[0.03]
+
+        transition-all
+        duration-300
+
+        hover:scale-105
+        hover:bg-white/[0.08]
+      "
+    >
+
+      {copied ? (
+
+        <Check
+          className="
+            h-5
+            w-5
+
+            text-green-400
           "
-                >
+        />
 
-                    <p
-                        className="
-              text-sm
-              font-medium
-            "
-                    >
-                        Endpoint
-                    </p>
+      ) : (
 
-                    <code
-                        className="
-              block
-              p-3
-              rounded-md
-              border
-              text-sm
-              break-all
-            "
-                    >
-                        {getUrl()}
-                    </code>
+        <Copy
+          className="
+            h-5
+            w-5
 
-                </div>
+            text-white/60
+          "
+        />
+
+      )}
+
+    </button>
+
+  </div>
+
+</div>
 
                 {/* ============================================
             ROW ID
@@ -376,13 +509,26 @@ export default function
                                 rows={10}
 
                                 className="
-                w-full
-                border
-                rounded-md
-                p-3
-                font-mono
-                text-sm
-              "
+  w-full
+
+  rounded-3xl
+
+  border
+  border-white/10
+
+  bg-black/20
+
+  p-5
+
+  font-mono
+  text-sm
+
+  text-white
+
+  outline-none
+
+  focus:border-white/20
+"
                             />
 
                         </div>
@@ -394,31 +540,46 @@ export default function
 
                 {error && (
 
-                    <p
+                    <div
                         className="
-              text-sm
-              text-red-500
-            "
+    rounded-2xl
+
+    border
+    border-red-500/20
+
+    bg-red-500/10
+
+    px-4
+    py-3
+
+    text-sm
+
+    text-red-300
+  "
                     >
                         {error}
-                    </p>
+                    </div>
 
                 )}
 
                 {/* ============================================
             ACTION
         ============================================= */}
-
-                <Button
-                    onClick={handleSend}
-                    disabled={loading}
+                <div
+                    className="
+    flex
+    justify-end
+  "
                 >
-
-                    {loading
-                        ? "Sending..."
-                        : "Send Request"}
-
-                </Button>
+                    <Button
+                        onClick={handleSend}
+                        disabled={loading}
+                    >
+                        {loading
+                            ? "Sending..."
+                            : "Send Request"}
+                    </Button>
+                </div>
 
                 {/* ============================================
             RESPONSE
@@ -459,19 +620,29 @@ export default function
 
                                 <div
                                     className="
-            border
-            rounded-md
-            overflow-auto
-            max-h-[500px]
-          "
+  overflow-auto
+
+  rounded-3xl
+
+  border
+  border-white/10
+
+  bg-black/20
+
+  max-h-[500px]
+"
                                 >
 
                                     <pre
                                         className="
-              p-4
-              text-sm
-              min-w-[700px]
-            "
+  p-6
+
+  text-sm
+
+  text-white/80
+
+  min-w-[700px]
+"
                                     >
                                         {JSON.stringify(
                                             paginatedResponse,

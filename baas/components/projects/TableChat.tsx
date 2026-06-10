@@ -3,6 +3,10 @@
 import { useState } from "react";
 
 import {
+  Send
+} from "lucide-react";
+
+import {
   Card,
   CardContent,
   CardHeader,
@@ -136,15 +140,47 @@ export default function
 
   return (
 
-    <Card>
+  <Card
+  className="
+    border-white/10
 
-      <CardHeader>
+    bg-white/[0.03]
 
-        <CardTitle>
-          AI Assistant
-        </CardTitle>
+    backdrop-blur-xl
+    p-4
+  "
+>
 
-      </CardHeader>
+      <>
+  <p
+    className="
+      text-sm
+
+      uppercase
+
+      tracking-[0.2em]
+      m-4
+
+      text-white/40
+    "
+  >
+    AI Assistant
+  </p>
+
+  <CardTitle
+    className="
+          mx-4
+      
+
+      text-2xl
+      font-semibold
+
+      text-white
+    "
+  >
+    Query Your Data
+  </CardTitle>
+</>
 
       <CardContent
         className="
@@ -152,85 +188,88 @@ export default function
         "
       >
 
-        <textarea
-          value={question}
-          onChange={(e) =>
-            setQuestion(
-              e.target.value
-            )
-          }
-          className="
-            w-full
-            min-h-[120px]
-            border
-            rounded-md
-            p-3
-          "
-          placeholder="
-Ask about your data...
-"
-        />
 
-        <Button
-          onClick={askAI}
-        >
-          {
-            loading
-              ? "Thinking..."
-              : "Ask AI"
-          }
-        </Button>
 
-        <div
-          className="
-    h-[400px]
-    overflow-y-auto
-    border
-    rounded-lg
-    p-4
-    space-y-3
-    bg-background
-  "
-        >
+        {messages.length > 0 && (
 
-          {messages.map(
-            (
-              message,
-              index
-            ) => (
+          <div
+            className="
+      h-[500px]
 
-              <div
-                key={index}
-                className={
+      overflow-y-auto
 
-                  message.role ===
-                    "user"
+      rounded-[28px]
 
-                    ? `
-              ml-auto
-              max-w-[80%]
-              rounded-lg
-              bg-blue-500/10
-              p-3
-            `
+      border
+      border-white/10
 
-                    : `
-              mr-auto
-              max-w-[80%]
-              rounded-lg
-              border
-              p-3
-            `
-                }
-              >
+      bg-black/10
 
-                {message.content}
+      p-6
 
-              </div>
-            )
-          )}
+      space-y-4
+    "
+          >
 
-        </div>
+            {messages.map(
+              (
+                message,
+                index
+              ) => (
+
+                <div
+                  key={index}
+                  className={
+
+                    message.role === "user"
+
+                      ? `
+        ml-auto
+
+        max-w-[75%]
+
+        rounded-[24px]
+        rounded-br-md
+
+        bg-white
+
+        px-5
+        py-4
+
+        text-black
+
+        shadow-lg
+      `
+
+                      : `
+        mr-auto
+
+        max-w-[75%]
+
+        rounded-[24px]
+        rounded-bl-md
+
+        border
+        border-white/10
+
+        bg-white/[0.05]
+
+        px-5
+        py-4
+
+        text-white
+      `
+                  }
+                >
+
+                  {message.content}
+
+                </div>
+              )
+            )}
+
+          </div>
+        )}
         {error && (
 
           <div
@@ -247,6 +286,53 @@ Ask about your data...
           </div>
 
         )}
+        <div
+          className="
+    flex
+    items-end
+    gap-3
+  "
+        >
+          <textarea
+            value={question}
+            onChange={(e) =>
+              setQuestion(
+                e.target.value
+              )
+            }
+            className="
+            w-full
+            min-h-[50px]
+            border
+            rounded-md
+            p-1
+          "
+            placeholder="
+Ask about your data...
+"
+          />
+
+          <Button
+            onClick={askAI}
+            disabled={
+              loading ||
+              !question.trim()
+            }
+            size="icon"
+            className="
+    h-14
+    w-14
+    rounded-full
+  "
+          >
+            <Send
+              className="
+      h-5
+      w-5
+    "
+            />
+          </Button>
+        </div>
 
       </CardContent>
 

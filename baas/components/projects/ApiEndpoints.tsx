@@ -1,11 +1,18 @@
 "use client";
 
+import { useState } from "react";
+
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+
+import {
+    Copy,
+    Check,
+} from "lucide-react";
 
 interface Props {
 
@@ -22,6 +29,8 @@ export default function
 
     const base =
         `/api/projects/${projectId}/data/${tableName}`;
+
+
 
     const endpoints = [
 
@@ -54,14 +63,80 @@ export default function
         },
     ];
 
+    const [copiedEndpoint,
+        setCopiedEndpoint] =
+        useState<string | null>(
+            null
+        );
+
+    async function copyEndpoint(
+        path: string
+    ) {
+
+        await navigator
+            .clipboard
+            .writeText(path);
+
+        setCopiedEndpoint(path);
+
+        setTimeout(() => {
+
+            setCopiedEndpoint(null);
+
+        }, 2000);
+    }
+
     return (
-        <Card>
+        <Card
+            className="
+    border-white/10
+
+    bg-white/[0.03]
+
+    backdrop-blur-xl
+    p-4
+  "
+        >
 
             <CardHeader>
 
-                <CardTitle>
+                <p
+                    className="
+      text-sm
+
+      uppercase
+
+      tracking-[0.2em]
+
+      text-white/40
+    "
+                >
+                    API Reference
+                </p>
+
+                <CardTitle
+                    className="
+      mt-2
+
+      text-2xl
+      font-semibold
+
+      text-white
+    "
+                >
                     Generated APIs
                 </CardTitle>
+
+                <p
+                    className="
+      mt-2
+
+      text-white/50
+    "
+                >
+                    Ready-to-use CRUD endpoints
+                    generated for this table.
+                </p>
 
             </CardHeader>
 
@@ -79,11 +154,20 @@ export default function
                                 endpoint.method
                             }
                             className="
-                border
-                rounded-md
-                p-4
-                space-y-2
-              "
+  rounded-3xl
+
+  border
+  border-white/10
+
+  bg-white/[0.03]
+
+  p-5
+
+  transition-all
+
+  hover:border-white/20
+  hover:bg-white/[0.05]
+"
                         >
 
                             <div
@@ -96,47 +180,136 @@ export default function
 
                                 <div
                                     className={`
-                    px-2
-                    py-1
-                    rounded
-                    text-xs
-                    font-medium
+  rounded-full
 
-                    ${endpoint.method === "GET"
+  px-3
+  py-1
 
-                                            ? "bg-green-500/10 text-green-600"
+  text-xs
+  font-semibold
+
+  border
+
+  ${endpoint.method === "GET"
+
+                                            ? `
+          border-green-500/30
+          bg-green-500/15
+          text-green-400
+        `
 
                                             : endpoint.method === "POST"
 
-                                                ? "bg-blue-500/10 text-blue-600"
+                                                ? `
+          border-blue-500/30
+          bg-blue-500/15
+          text-blue-400
+        `
 
                                                 : endpoint.method === "PUT"
 
-                                                    ? "bg-yellow-500/10 text-yellow-600"
+                                                    ? `
+          border-yellow-500/30
+          bg-yellow-500/15
+          text-yellow-400
+        `
 
-                                                    : "bg-red-500/10 text-red-600"
+                                                    : `
+          border-red-500/30
+          bg-red-500/15
+          text-red-400
+        `
                                         }
-                  `}
+`}
                                 >
                                     {endpoint.method}
                                 </div>
 
                                 <code
                                     className="
-                    text-sm
-                    break-all
-                  "
+    rounded-xl
+
+    bg-black/20
+
+    px-3
+    py-2
+
+    text-sm
+
+    text-white/80
+
+    break-all
+  "
                                 >
                                     {endpoint.path}
                                 </code>
+                                <button
+                                    onClick={() =>
+                                        copyEndpoint(
+                                            endpoint.path
+                                        )
+                                    }
+                                    className="
+    flex
+
+    h-9
+    w-9
+
+    items-center
+    justify-center
+
+    rounded-full
+
+    border
+    border-white/10
+
+    bg-white/[0.03]
+
+    transition-all
+    duration-300
+
+    hover:bg-white/[0.08]
+    hover:scale-105
+  "
+                                >
+
+                                    {copiedEndpoint ===
+                                        endpoint.path ? (
+
+                                        <Check
+                                            className="
+        h-4
+        w-4
+
+        text-green-400
+      "
+                                        />
+
+                                    ) : (
+
+                                        <Copy
+                                            className="
+        h-4
+        w-4
+
+        text-white/60
+      "
+                                        />
+
+                                    )}
+
+                                </button>
 
                             </div>
 
                             <p
                                 className="
-                  text-sm
-                  text-muted-foreground
-                "
+  mt-3
+
+  text-sm
+
+  text-white/50
+"
                             >
                                 {endpoint.description}
                             </p>
