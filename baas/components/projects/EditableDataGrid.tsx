@@ -17,6 +17,11 @@ import { authenticatedFetch }
   from "@/lib/frontend/authenticatedFetch";
 
 import {
+  Trash2,
+  Plus,
+} from "lucide-react";
+
+import {
   Card,
   CardContent,
   CardHeader,
@@ -335,7 +340,14 @@ export default function
     setPreview(updated);
   }
   return (
-    <Card>
+    <Card
+      className="
+    border-white/10
+    bg-transparent
+    shadow-none
+    p-2
+  "
+    >
 
       <CardHeader
         className="
@@ -352,14 +364,6 @@ export default function
   "
         >
 
-          <p
-            className="
-      text-sm
-      font-medium
-    "
-          >
-            Table Name
-          </p>
 
           <input
 
@@ -441,18 +445,25 @@ export default function
 
         <div
           className="
-            overflow-auto
-            border
-            rounded-md
-            max-h-[600px]
-          "
+    overflow-auto
+
+    rounded-[28px]
+
+    border
+    border-white/10
+
+    bg-black/10
+
+    backdrop-blur-xl
+  "
         >
 
           <table
             className="
-              w-full
-              border-collapse
-            "
+    w-full
+
+    text-white
+  "
           >
 
             <thead
@@ -471,11 +482,17 @@ export default function
                     <th
                       key={index}
                       className="
-                        border-b
-                        p-3
-                        text-left
-                        min-w-[180px]
-                      "
+  p-6
+
+  text-left
+
+  align-top
+
+  min-w-[220px]
+
+  border-b
+  border-white/5
+"
                     >
 
                       <div
@@ -586,14 +603,7 @@ export default function
                   )
                 )}
 
-                <th
-                  className="
-                    border-b
-                    p-3
-                  "
-                >
-                  Actions
-                </th>
+
 
               </tr>
 
@@ -630,6 +640,10 @@ export default function
                             }
                             className="
                               border-b
+                               border-white/5
+
+    hover:bg-white/[0.05]
+    transition-colors
                               p-2
                             "
                           >
@@ -665,21 +679,46 @@ export default function
                       <td
                         className="
                           border-b
+                          border-white/5
                           p-2
+                          
                         "
                       >
 
-                        <Button
-                          variant="destructive"
-                          size="sm"
+                        <button
                           onClick={() =>
-                            deleteRow(
-                              actualIndex
-                            )
+                            deleteRow(actualIndex)
                           }
+                          className="
+    flex
+
+    h-9
+    w-9
+
+    items-center
+    justify-center
+
+    rounded-full
+
+    border
+    border-white/10
+
+    bg-white/[0.03]
+
+    transition-all
+
+    hover:bg-red-500/20
+    hover:scale-110
+  "
                         >
-                          Delete
-                        </Button>
+                          <Trash2
+                            className="
+      h-4
+      w-4
+      text-white/70
+    "
+                          />
+                        </button>
 
                       </td>
 
@@ -741,15 +780,26 @@ export default function
       </CardContent>
       {deployError && (
 
-        <pre
+        <div
           className="
-      text-sm
-      text-red-500
-      whitespace-pre-wrap
-    "
+    mt-4
+
+    rounded-2xl
+
+    border
+    border-red-500/20
+
+    bg-red-500/10
+
+    p-4
+
+    text-red-300
+
+    whitespace-pre-wrap
+  "
         >
           {deployError}
-        </pre>
+        </div>
 
       )}
     </Card>

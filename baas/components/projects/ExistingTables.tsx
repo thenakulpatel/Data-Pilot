@@ -6,6 +6,10 @@ import { Button }
 import DeleteTableButton
   from "./DeleteTableButton";
 
+import { ArrowUpRight } from "lucide-react";
+
+
+
 import { useRouter }
   from "next/navigation";
 
@@ -49,9 +53,7 @@ export default function
       <Card>
 
         <CardContent
-          className="
-            p-6
-          "
+
         >
 
           <p
@@ -86,15 +88,35 @@ export default function
             <CardHeader
               className="
                 flex
+                p-2
                 flex-row
                 items-center
                 justify-between
               "
             >
 
-              <CardTitle>
+              <CardTitle
+                className="
+    text-xl
+    font-semibold
+    text-white
+    pl-2
+  "
+              >
                 {table.name}
               </CardTitle>
+
+              <p
+                className="
+    mt-2
+
+    text-sm
+
+    text-white/50
+  "
+              >
+                {table.fields.length} columns
+              </p>
 
               <div
                 className="
@@ -103,14 +125,17 @@ export default function
   "
               >
 
+
                 <Button
+                  variant="outline"
+                  size="icon"
                   onClick={() =>
                     router.push(
                       `/projects/${projectId}/tables/${table.name}`
                     )
                   }
                 >
-                  Open
+                  <ArrowUpRight className="h-4 w-4 " />
                 </Button>
 
                 <DeleteTableButton
@@ -127,37 +152,68 @@ export default function
 
               <div
                 className="
-                  space-y-2
-                "
+    space-y-3
+  "
               >
 
-                {table.fields.map(
-                  (field) => (
+                <div
+                  className="
+      flex
+      flex-wrap
+      gap-2 pb-2 mb-2
+    "
+                >
 
-                    <div
-                      key={field.name}
-                      className="
-                        flex
-                        justify-between
-                      "
-                    >
+                  {table.fields
+                    .slice(0, 3)
+                    .map((field) => (
 
-                      <span>
+                      <span
+                        key={field.name}
+                        className="
+            rounded-full
+
+            border
+            border-white/10
+
+            bg-white/[0.03]
+
+            px-3
+            py-1
+
+            text-xs
+            text-white/60
+          "
+                      >
                         {field.name}
                       </span>
 
-                      <span
-                        className="
-                          text-sm
-                          text-muted-foreground
-                        "
-                      >
-                        {field.type}
-                      </span>
+                    ))}
 
-                    </div>
-                  )
-                )}
+                  {table.fields.length > 3 && (
+
+                    <span
+                      className="
+          rounded-full
+
+          border
+          border-white/10
+
+          bg-white/[0.03]
+
+          px-3
+          py-1
+
+          text-xs
+          text-white/40
+        "
+                    >
+                      +{table.fields.length - 3}
+                    </span>
+
+                  )}
+
+                </div>
 
               </div>
 

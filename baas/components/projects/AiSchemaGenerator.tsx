@@ -138,13 +138,17 @@ export default function
 
     <div
       className="
-        border
-        rounded-xl
-        p-5
-        space-y-5
-      "
-    >
+    glass-card
 
+    rounded-[32px]
+
+    p-8
+
+    space-y-6
+
+    overflow-hidden
+  "
+    >
       {/* ============================================
           HEADER
       ============================================= */}
@@ -154,25 +158,74 @@ export default function
           space-y-2
         "
       >
-
-        <h2
+        <div
           className="
-            text-xl
-            font-semibold
-          "
+    flex
+    items-start
+    gap-4
+  "
         >
-          AI Backend Generator
-        </h2>
 
-        <p
-          className="
-            text-sm
-            text-muted-foreground
-          "
-        >
-          Describe the backend
-          system you want.
-        </p>
+          <div
+            className="
+      flex
+      h-14
+      w-14
+
+      items-center
+      justify-center
+
+      rounded-2xl
+
+      glass-panel
+
+      text-2xl
+    "
+          >
+            🤖
+          </div>
+
+          <div>
+
+            <p
+              className="
+        text-sm
+        uppercase
+        tracking-[0.2em]
+
+        text-white/40
+      "
+            >
+              AI Builder
+            </p>
+
+            <h2
+              className="
+        mt-2
+
+        text-3xl
+        font-bold
+
+        text-white
+      "
+            >
+              Generate Database Schema
+            </h2>
+
+            <p
+              className="
+        mt-2
+
+        text-white/50
+      "
+            >
+              Describe your backend and let AI
+              generate tables, fields and sample data.
+            </p>
+
+          </div>
+
+        </div>
 
       </div>
 
@@ -202,13 +255,32 @@ Create a single employee table with:
         rows={8}
 
         className="
-          w-full
-          border
-          rounded-md
-          p-3
-          text-sm
-        "
+  min-h-[220px]
+  w-full
+
+  rounded-3xl
+
+  border
+  border-white/10
+
+  bg-white/[0.04]
+
+  p-5
+
+  text-white
+
+  placeholder:text-white/50
+
+  backdrop-blur-xl
+
+  resize-none
+
+  focus:outline-none
+  focus:border-white/20
+"
       />
+
+
 
       {/* ============================================
           MOCK DATA
@@ -289,11 +361,24 @@ Create a single employee table with:
             }
 
             className="
-              w-full
-              border
-              rounded-md
-              p-2
-            "
+  mt-3
+
+  h-12
+  w-20
+
+  rounded-full
+
+  border
+  border-white/10
+
+  bg-white/[0.05]
+
+  px-4
+
+  text-white
+
+  focus:outline-none
+"
           />
 
           <p

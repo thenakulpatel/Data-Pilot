@@ -1,11 +1,11 @@
 import { notFound }
-from "next/navigation";
+  from "next/navigation";
 
 import ProjectWorkspace
-from "@/components/projects/ProjectWorkspace";
+  from "@/components/projects/ProjectWorkspace";
 
 import { pool }
-from "@/lib/db";
+  from "@/lib/db";
 
 interface Props {
   params: Promise<{
@@ -14,9 +14,9 @@ interface Props {
 }
 
 export default async function
-ProjectPage({
-  params,
-}: Props) {
+  ProjectPage({
+    params,
+  }: Props) {
 
   // ================================================
   // PARAMS
@@ -57,18 +57,65 @@ ProjectPage({
   return (
     <main
       className="
-        min-h-screen
-        p-6
-      "
+    mx-auto
+    max-w-7xl
+
+    px-6
+    py-10
+
+    space-y-10
+  "
     >
+      <div>
+
+        <p
+          className="
+        text-sm
+        uppercase
+        tracking-[0.3em]
+
+        text-white/40
+      "
+        >
+          Project Workspace
+        </p>
+
+        <h1
+          className="
+        mt-3
+
+        text-6xl
+        font-bold
+
+        tracking-tight
+
+        text-white
+      "
+        >
+          {project.name}
+        </h1>
+
+        <p
+          className="
+        mt-4
+
+        max-w-2xl
+
+        text-lg
+
+        text-white/50
+      "
+        >
+          Design schemas, generate APIs,
+          manage tables and deploy your backend.
+        </p>
+
+      </div>
 
       <ProjectWorkspace
         projectId={projectId}
-        apiKey={
-          project.api_key
-        }
+        apiKey={project.api_key}
       />
-
     </main>
   );
 }

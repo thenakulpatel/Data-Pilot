@@ -3,6 +3,8 @@
 import { useRouter }
     from "next/navigation";
 
+import { Trash2 } from "lucide-react";
+
 import { Button }
     from "@/components/ui/button";
 
@@ -79,10 +81,39 @@ export default function
     return (
 
         <Button
+            className="
+    flex
+
+    h-11
+    w-11
+
+    items-center
+    justify-center
+
+    rounded-full
+
+    border
+    border-white/10
+
+    bg-white/[0.04]
+
+    text-white/60
+
+    transition-all
+
+    hover:scale-105
+    hover:bg-red-500/10
+    hover:text-red-300
+  "
             variant="destructive"
             onClick={deleteTable}
         >
-            Delete Table
+            <Trash2
+                className="
+      h-4
+      w-4
+    "
+            />
         </Button>
 
     );
