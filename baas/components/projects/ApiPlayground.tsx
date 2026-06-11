@@ -5,8 +5,8 @@ import {
 } from "react";
 
 import {
-  Copy,
-  Check,
+    Copy,
+    Check,
 } from "lucide-react";
 
 import { Button }
@@ -45,9 +45,7 @@ export default function
         useState("");
 
     const [body, setBody] =
-        useState(`{
-  
-}`);
+        useState("");
 
     const [response,
         setResponse] =
@@ -62,25 +60,25 @@ export default function
     const [error, setError] =
         useState("");
 
-        const [copied,
-  setCopied] =
-  useState(false);
-  async function copyEndpoint() {
+    const [copied,
+        setCopied] =
+        useState(false);
+    async function copyEndpoint() {
 
-  await navigator
-    .clipboard
-    .writeText(
-      getUrl()
-    );
+        await navigator
+            .clipboard
+            .writeText(
+                getUrl()
+            );
 
-  setCopied(true);
+        setCopied(true);
 
-  setTimeout(() => {
+        setTimeout(() => {
 
-    setCopied(false);
+            setCopied(false);
 
-  }, 2000);
-}
+        }, 2000);
+    }
 
     // ===================================================
     // URL
@@ -327,31 +325,31 @@ export default function
             URL
         ============================================= */}
 
-              <div
-  className="
+                <div
+                    className="
     space-y-2
   "
->
+                >
 
-  <p
-    className="
+                    <p
+                        className="
       text-sm
       font-medium
     "
-  >
-    Endpoint
-  </p>
+                    >
+                        Endpoint
+                    </p>
 
-  <div
-    className="
+                    <div
+                        className="
       flex
       items-center
       gap-3
     "
-  >
+                    >
 
-    <code
-      className="
+                        <code
+                            className="
         flex-1
 
         rounded-2xl
@@ -369,13 +367,13 @@ export default function
 
         break-all
       "
-    >
-      {getUrl()}
-    </code>
+                        >
+                            {getUrl()}
+                        </code>
 
-    <button
-      onClick={copyEndpoint}
-      className="
+                        <button
+                            onClick={copyEndpoint}
+                            className="
         flex
 
         h-11
@@ -399,37 +397,37 @@ export default function
         hover:scale-105
         hover:bg-white/[0.08]
       "
-    >
+                        >
 
-      {copied ? (
+                            {copied ? (
 
-        <Check
-          className="
+                                <Check
+                                    className="
             h-5
             w-5
 
             text-green-400
           "
-        />
+                                />
 
-      ) : (
+                            ) : (
 
-        <Copy
-          className="
+                                <Copy
+                                    className="
             h-5
             w-5
 
             text-white/60
           "
-        />
+                                />
 
-      )}
+                            )}
 
-    </button>
+                        </button>
 
-  </div>
+                    </div>
 
-</div>
+                </div>
 
                 {/* ============================================
             ROW ID
@@ -506,7 +504,13 @@ export default function
                                     )
                                 }
 
-                                rows={10}
+                                 placeholder={`{
+  "age": 20,
+  "name": "John Doe",
+  "email": "john@example.com"
+}`}
+
+                                rows={5}
 
                                 className="
   w-full

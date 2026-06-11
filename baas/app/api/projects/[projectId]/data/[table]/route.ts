@@ -97,6 +97,7 @@ export async function GET(
         `
         SELECT *
         FROM ${physicalTableName}
+        ORDER BY id ASC
         `
       );
 
