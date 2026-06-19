@@ -1,5 +1,4 @@
-import { pipeline }
-from "@xenova/transformers";
+// lib/rag/generateEmbedding.ts
 
 let extractor: any =
   null;
@@ -14,6 +13,17 @@ generateEmbedding(
     console.log(
       "Loading embedding model..."
     );
+
+    const {
+      pipeline,
+      env,
+    } =
+      await import(
+        "@xenova/transformers"
+      );
+
+    env.allowLocalModels =
+      false;
 
     extractor =
       await pipeline(
