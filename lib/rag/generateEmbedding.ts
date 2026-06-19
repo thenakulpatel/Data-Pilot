@@ -1,37 +1,45 @@
-import { pipeline }
-from "@xenova/transformers";
-
-let extractor: any =
-  null;
+// lib/rag/generateEmbedding.ts
 
 export async function
 generateEmbedding(
   text: string
 ): Promise<number[]> {
 
-  if (!extractor) {
-
-    console.log(
-      "Loading embedding model..."
-    );
-
-    extractor =
-      await pipeline(
-        "feature-extraction",
-        "Xenova/all-MiniLM-L6-v2"
-      );
-  }
-
-  const output =
-    await extractor(
-      text,
+  const response =
+    await fetch(
+      "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction",
       {
-        pooling: "mean",
-        normalize: true,
+        method: "POST",
+
+        headers: {
+          Authorization:
+            `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          inputs: text,
+        }),
       }
     );
 
-  return Array.from(
-    output.data
-  );
+  if (!response.ok) {
+
+    const error =
+      await response.text();
+
+    throw new Error(error);
+  }
+
+  const embedding =
+    await response.json();
+
+  // flatten if nested
+  return Array.isArray(
+    embedding[0]
+  )
+    ? embedding[0]
+    : embedding;
 }

@@ -1,33 +1,24 @@
-import {
-  NextRequest,
-  NextResponse,
-} from "next/server";
+// app/api/test-embedding/route.ts
 
 import {
   generateEmbedding,
-} from "@/lib/rag/generateEmbedding";
+}
+from "@/lib/rag/generateEmbedding";
 
-export async function POST(
-  req: NextRequest
-) {
+import {
+  NextResponse,
+}
+from "next/server";
 
-  const body =
-    await req.json();
+export async function GET() {
 
   const embedding =
     await generateEmbedding(
-      body.text
+      "Virat Kohli"
     );
 
   return NextResponse.json({
-
     dimensions:
       embedding.length,
-
-    sample:
-      embedding.slice(
-        0,
-        10
-      ),
-    });
+  });
 }
