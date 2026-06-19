@@ -1,11 +1,7 @@
-import type { NextConfig }
-from "next";
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
-  transpilePackages: [
-    "@xenova/transformers",
-  ],
+  /* config options here */
 };
 
 export default nextConfig;
