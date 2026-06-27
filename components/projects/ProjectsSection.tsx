@@ -1,267 +1,171 @@
 "use client";
 
-import Link
-    from "next/link";
+import Link from "next/link";
 
-import { Trash2 }
-    from "lucide-react";
+import { ArrowUpRight, LucideCaseUpper, Trash2 } from "lucide-react";
 
-import {
-    useEffect,
-    useState,
-} from "react";
+import { useEffect, useState } from "react";
 
-import { getToken }
-    from "@/lib/frontend/auth";
+import { getToken } from "@/lib/frontend/auth";
 
-import { Project }
-    from "@/types/project";
+import { Project } from "@/types/project";
 
-import CreateProjectForm
-    from "./CreateProjectForm";
+import CreateProjectForm from "./CreateProjectForm";
 
-import {
-    Card,
-    CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
+export default function ProjectsSection() {
+  const [currentPage, setCurrentPage] = useState(1);
 
-export default function
-    ProjectsSection() {
+  const PROJECTS_PER_PAGE = 6;
 
-    const [currentPage, setCurrentPage] =
-        useState(1);
+  const [projects, setProjects] = useState<Project[]>([]);
 
-    const PROJECTS_PER_PAGE = 1;
+  const [loading, setLoading] = useState(true);
 
-    const [projects, setProjects] =
-        useState<Project[]>([]);
+  const [error, setError] = useState("");
+  const totalPages = Math.ceil(projects.length / PROJECTS_PER_PAGE);
 
-    const [loading, setLoading] =
-        useState(true);
+  const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
 
-    const [error, setError] =
-        useState("");
-    const totalPages =
-        Math.ceil(
-            projects.length /
-            PROJECTS_PER_PAGE
-        );
+  const paginatedProjects = projects.slice(
+    startIndex,
+    startIndex + PROJECTS_PER_PAGE,
+  );
 
-    const startIndex =
-        (currentPage - 1) *
-        PROJECTS_PER_PAGE;
+  async function fetchProjects() {
+    try {
+      setLoading(true);
 
-    const paginatedProjects =
-        projects.slice(
-            startIndex,
-            startIndex +
-            PROJECTS_PER_PAGE
-        );
+      const token = getToken();
 
-    async function fetchProjects() {
+      const response = await fetch("/api/projects/list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        try {
+      const data = await response.json();
 
-            setLoading(true);
+      if (!response.ok) {
+        setError(data.error || "Failed to fetch projects");
 
-            const token =
-                getToken();
+        return;
+      }
 
-            const response =
-                await fetch(
-                    "/api/projects/list",
-                    {
-                        headers: {
-                            Authorization:
-                                `Bearer ${token}`,
-                        },
-                    }
-                );
+      // console.log(data);
 
-            const data =
-                await response.json();
+      setProjects(data);
+      setCurrentPage(1);
+    } catch (error) {
+      console.error(error);
 
-            if (!response.ok) {
+      setError("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  }
 
-                setError(
-                    data.error ||
-                    "Failed to fetch projects"
-                );
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
-                return;
-            }
+  async function handleDelete(projectId: string) {
+    const confirmed = window.confirm("Delete this project?");
 
-            // console.log(data);
-
-            setProjects(data);
-            setCurrentPage(1);
-
-        } catch (error) {
-
-            console.error(error);
-
-            setError(
-                "Something went wrong"
-            );
-
-        } finally {
-
-            setLoading(false);
-        }
+    if (!confirmed) {
+      return;
     }
 
-    useEffect(() => {
-        fetchProjects();
-    }, []);
+    try {
+      const token = getToken();
 
-    async function handleDelete(
-        projectId: string
-    ) {
+      const response = await fetch(`/api/projects/${projectId}`, {
+        method: "DELETE",
 
-        const confirmed =
-            window.confirm(
-                "Delete this project?"
-            );
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        if (!confirmed) {
-            return;
-        }
+      const data = await response.json();
 
-        try {
+      if (!response.ok) {
+        alert(data.error || "Failed to delete project");
 
-            const token =
-                getToken();
+        return;
+      }
 
-            const response =
-                await fetch(
-                    `/api/projects/${projectId}`,
-                    {
-                        method: "DELETE",
+      fetchProjects();
+    } catch (error) {
+      console.error(error);
 
-                        headers: {
-                            Authorization:
-                                `Bearer ${token}`,
-                        },
-                    }
-                );
-
-            const data =
-                await response.json();
-
-            if (!response.ok) {
-
-                alert(
-                    data.error ||
-                    "Failed to delete project"
-                );
-
-                return;
-            }
-
-            fetchProjects();
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Something went wrong"
-            );
-        }
+      alert("Something went wrong");
     }
+  }
 
-    const paginationItems = [];
+  const paginationItems = [];
 
-    for (
-        let page = 1;
-        page <= totalPages;
-        page++
-    ) {
-        const isFirst =
-            page <= 2;
+  for (let page = 1; page <= totalPages; page++) {
+    const isFirst = page <= 2;
 
-        const isLast =
-            page >= totalPages - 1;
+    const isLast = page >= totalPages - 1;
 
-        const isNearCurrent =
-            Math.abs(
-                page - currentPage
-            ) <= 1;
+    const isNearCurrent = Math.abs(page - currentPage) <= 1;
 
-        if (
-            isFirst ||
-            isLast ||
-            isNearCurrent
-        ) {
-            paginationItems.push(page);
-        } else {
+    if (isFirst || isLast || isNearCurrent) {
+      paginationItems.push(page);
+    } else {
+      const previous = paginationItems[paginationItems.length - 1];
 
-            const previous =
-                paginationItems[
-                paginationItems.length - 1
-                ];
-
-            if (previous !== "...") {
-                paginationItems.push("...");
-            }
-        }
+      if (previous !== "...") {
+        paginationItems.push("...");
+      }
     }
+  }
 
-    return (
-        <div
-            className="
+  return (
+    <div
+      className="
         space-y-6
       "
-        >
+    >
+      <CreateProjectForm onProjectCreated={fetchProjects} />
 
-            <CreateProjectForm
-                onProjectCreated={
-                    fetchProjects
-                }
-            />
+      {loading && <p>Loading projects...</p>}
 
-            {loading && (
-                <p>
-                    Loading projects...
-                </p>
-            )}
-
-            {error && (
-                <p
-                    className="
+      {error && (
+        <p
+          className="
             text-red-500
           "
-                >
-                    {error}
-                </p>
-            )}
-            {!loading &&
-                projects.length === 0 && (
-
-                    <Card
-                        className="
+        >
+          {error}
+        </p>
+      )}
+      {!loading && projects.length === 0 && (
+        <Card
+          className="
       border-white/10
       bg-white/[0.03]
     "
-                    >
-                        <CardContent
-                            className="
+        >
+          <CardContent
+            className="
         py-16
         text-center
       "
-                        >
-                            <div
-                                className="
+          >
+            <div
+              className="
     flex
     flex-col
     items-center
     text-center
   "
-                            >
-
-                                <div
-                                    className="
+            >
+              <div
+                className="
       flex
       h-20
       w-20
@@ -275,12 +179,12 @@ export default function
 
       text-3xl
     "
-                                >
-                                    🚀
-                                </div>
+              >
+                🚀
+              </div>
 
-                                <h3
-                                    className="
+              <h3
+                className="
       mt-6
 
       text-3xl
@@ -288,72 +192,70 @@ export default function
 
       text-white
     "
-                                >
-                                    No Projects Yet
-                                </h3>
+              >
+                No Projects Yet
+              </h3>
 
-                                <p
-                                    className="
+              <p
+                className="
       mt-4
 
       max-w-md
 
       text-white/50
     "
-                                >
-                                    Create your first backend workspace and start generating databases, APIs and authentication instantly.
-                                </p>
+              >
+                Create your first backend workspace and start generating
+                databases, APIs and authentication instantly.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
-
-            <div
-                className="
+      <div
+        className="
     flex
     items-end
     justify-between
   "
-            >
-                <div>
-
-                    <p
-                        className="
+      >
+        <div>
+          <p
+            className="
         text-xs
         uppercase
         tracking-[0.3em]
         text-white/40
       "
-                    >
-                        Workspace
-                    </p>
+          >
+            Workspace
+          </p>
 
-                    <h2
-                        className="
+          <h2
+            className="
         mt-3
         text-4xl
         font-bold
         text-white
       "
-                    >
-                        Projects
-                    </h2>
+          >
+            Projects
+          </h2>
 
-                    <p
-                        className="
+          <p
+            className="
         mt-3
         text-lg
         text-white/50
       "
-                    >
-                        Manage databases, APIs and backend infrastructure.
-                    </p>
+          >
+            Manage databases, APIs and backend infrastructure.
+          </p>
+        </div>
 
-                </div>
-
-                <div
-                    className="
+        <div
+          className="
       hidden
       md:flex
 
@@ -370,28 +272,28 @@ export default function
       px-4
       py-2
     "
-                >
-                    <div
-                        className="
+        >
+          <div
+            className="
         h-2
         w-2
         rounded-full
         bg-green-400
       "
-                    />
+          />
 
-                    <span
-                        className="
+          <span
+            className="
         text-sm
         text-white/60
       "
-                    >
-                        Active Workspace
-                    </span>
-                </div>
-            </div>
-            <div
-                className="
+          >
+            Active Workspace
+          </span>
+        </div>
+      </div>
+      <div
+        className="
    grid
 gap-8
 
@@ -399,19 +301,11 @@ md:grid-cols-2
 xl:grid-cols-3
 2xl:grid-cols-4
   "
-            >
-
-
-
-                {paginatedProjects.map(
-                    (project) => (
-
-                        <Link
-                            key={project.id}
-                            href={`/projects/${project.id}`}
-                        >
-                            <Card
-                                className="
+      >
+        {paginatedProjects.map((project) => (
+          <Link key={project.id} href={`/projects/${project.id}`}>
+            <Card
+              className="
       group
       cursor-pointer
 
@@ -432,80 +326,54 @@ hover:shadow-[0_0_40px_rgba(255,255,255,0.08)]
     
       hover:border-white/20
     "
-                            >
-                                <CardContent
-                                    className="
+            >
+              <CardContent
+                className="
     flex
     flex-col
     justify-between
 
     p-7
 
-    min-h-[220px]
+    min-h-[100px]
   "
-                                >
-                                    <div
-                                        className="
+              >
+                <div
+                  className="
           flex
           items-start
           justify-between
         "
-                                    >
-                                        <div>
-                                            <div
-                                                className="
-    mb-5
-
-    flex
-    h-14
-    w-14
-
-    items-center
-    justify-center
-
-    rounded-2xl
-
-    border
-    border-white/10
-
-    bg-white/[0.04]
-
-    text-xl
-  "
-                                            >
-                                                🚀
-                                            </div>
-                                            <h2
-                                                className="
-              text-lg
+                >
+                  <div>
+                    <h2
+                      className="
+              text-xl
               font-semibold
               text-white
             "
-                                            >
-                                                {project.name}
-                                            </h2>
+                    >
+                      {project.name}
+                    </h2>
 
-                                            <p
-                                                className="
+                    <p
+                      className="
               mt-2
               text-sm
               text-white/50
             "
-                                            >
-                                                Backend Project
-                                            </p>
-                                        </div>
+                    >
+                      Backend Project
+                    </p>
+                  </div>
 
-                                        <button
-                                            onClick={(e) => {
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
 
-                                                e.preventDefault();
-
-                                                handleDelete(
-                                                    project.id
-                                                );
-                                            }}
-                                            className="
+                      handleDelete(project.id);
+                    }}
+                    className="
             flex
             h-10
             w-10
@@ -522,35 +390,35 @@ hover:shadow-[0_0_40px_rgba(255,255,255,0.08)]
 hover:scale-110
 hover:bg-red-500/20
           "
-                                        >
-                                            <Trash2
-                                                className="
+                  >
+                    <Trash2
+                      className="
     h-4
     w-4
   "
-                                            />
-                                        </button>
-                                    </div>
+                    />
+                  </button>
+                </div>
 
-                                    <div
-                                        className="
+                <div
+                  className="
           mt-8
           flex
           items-center
           justify-between
         "
-                                    >
-                                        <span
-                                            className="
+                >
+                  <span
+                    className="
             text-xs
             text-white/40
           "
-                                        >
-                                            Open Workspace
-                                        </span>
+                  >
+                    Open Workspace
+                  </span>
 
-                                        <span
-                                            className="
+                  <span
+                    className="
             text-2xl
             text-white/60
 
@@ -558,46 +426,36 @@ hover:bg-red-500/20
 
             group-hover:translate-x-1
           "
-                                        >
-                                            →
-                                        </span>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    )
-                )}
-
-            </div>
-            <div
-                className="
+                  >
+                    <ArrowUpRight/>
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+      <div
+        className="
     mt-12
     flex
     justify-center
   "
-            >
-                {totalPages > 1 && (
-
-                    <div
-                        className="
+      >
+        {totalPages > 1 && (
+          <div
+            className="
         flex
         items-center
         gap-3
         rounded-full
         p-2
     "
-                    >
-
-                        <button
-                            onClick={() =>
-                                setCurrentPage(
-                                    currentPage - 1
-                                )
-                            }
-                            disabled={
-                                currentPage === 1
-                            }
-                            className="
+          >
+            <button
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="
   rounded-full
 
   border
@@ -620,38 +478,32 @@ hover:bg-red-500/20
 
   disabled:opacity-30
 "
-                        >
-                            Previous
-                        </button>
+            >
+              Previous
+            </button>
 
-                        {paginationItems.map(
-                            (item, index) => {
-
-                                if (item === "...") {
-
-                                    return (
-                                        <span
-                                            key={index}
-                                            className="
+            {paginationItems.map((item, index) => {
+              if (item === "...") {
+                return (
+                  <span
+                    key={index}
+                    className="
             px-2
             text-white/40
           "
-                                        >
-                                            ...
-                                        </span>
-                                    );
-                                }
+                  >
+                    ...
+                  </span>
+                );
+              }
 
-                                const page =
-                                    item as number;
+              const page = item as number;
 
-                                return (
-                                    <button
-                                        key={page}
-                                        onClick={() =>
-                                            setCurrentPage(page)
-                                        }
-                                        className={`
+              return (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`
           h-11
           w-11
 
@@ -662,37 +514,31 @@ hover:bg-red-500/20
 
           transition-all
 
-          ${page === currentPage
-                                                ? `
+          ${
+            page === currentPage
+              ? `
                 glass-panel
                 text-white
                 shadow-[0_0_25px_rgba(255,255,255,0.12)]
               `
-                                                : `
+              : `
                 bg-white/[0.03]
                 text-white/60
                 hover:bg-white/[0.08]
                 hover:text-white
               `
-                                            }
+          }
         `}
-                                    >
-                                        {page}
-                                    </button>
-                                );
-                            }
-                        )}
+                >
+                  {page}
+                </button>
+              );
+            })}
 
-                        <button
-                            onClick={() =>
-                                setCurrentPage(
-                                    currentPage + 1
-                                )
-                            }
-                            disabled={
-                                currentPage === totalPages
-                            }
-                            className="
+            <button
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="
         rounded-full
 
   border
@@ -715,13 +561,12 @@ hover:bg-red-500/20
 
   disabled:opacity-30
       "
-                        >
-                            Next
-                        </button>
-
-                    </div>
-                )}
-            </div>
-        </div>
-    );
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

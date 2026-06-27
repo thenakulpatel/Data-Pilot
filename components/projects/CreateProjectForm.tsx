@@ -146,8 +146,8 @@ export default function
           "
         >
           Create a new backend project with
-          database schemas, API generation,
-          authentication and deployment tools.
+AI-assisted schema generation,
+instant APIs and intelligent data querying.
         </p>
 
       </div>

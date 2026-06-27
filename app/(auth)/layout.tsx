@@ -1,3 +1,5 @@
+import HomeNavbar from "@/components/navbar/HomeNavbar";
+
 export default function AuthLayout({
   children,
 }: {
@@ -12,6 +14,7 @@ export default function AuthLayout({
         overflow-hidden
       "
     >
+   
       {/* Background blobs */}
 
       <div
@@ -54,6 +57,7 @@ export default function AuthLayout({
         "
       >
         {/* LEFT PANEL */}
+         <HomeNavbar/>
 
         <div
           className="
@@ -63,29 +67,12 @@ export default function AuthLayout({
     flex-col
     justify-center
     pr-16
+    pt-15
   "
         >
-
-          <div
-            className="
-      mb-8
-      w-fit
-      rounded-full
-      border
-      border-white/10
-      bg-white/5
-      px-5
-      py-2
-      text-sm
-      text-white/70
-      backdrop-blur-xl
-    "
-          >
-            Backend Infrastructure Platform
-          </div>
-
           <h1
             className="
+            pt-4
       max-w-3xl
       text-7xl
       font-bold
@@ -108,9 +95,8 @@ export default function AuthLayout({
       text-white/60
     "
           >
-            Generate databases, APIs,
-            authentication and schemas
-            from spreadsheets, JSON or AI.
+            Design, deploy, and query production-ready backends from AI prompts
+            or structured data.
           </p>
           <div
             className="
@@ -121,15 +107,10 @@ export default function AuthLayout({
     gap-4
   "
           >
-
             <div className="glass-panel rounded-3xl p-5">
-              <div className="mb-2 text-lg">
-                ⚡
-              </div>
+              <div className="mb-2 text-lg text-cyan-500">æ</div>
 
-              <h3 className="font-semibold text-white">
-                Instant CRUD APIs
-              </h3>
+              <h3 className="font-semibold text-white">Instant CRUD APIs</h3>
 
               <p className="mt-2 text-sm text-white/60">
                 Ready-to-use REST endpoints.
@@ -137,13 +118,9 @@ export default function AuthLayout({
             </div>
 
             <div className="glass-panel rounded-3xl p-5">
-              <div className="mb-2 text-lg">
-                🗄
-              </div>
+              <div className="mb-2 text-lg text-indigo-500">æ</div>
 
-              <h3 className="font-semibold text-white">
-                Database Generation
-              </h3>
+              <h3 className="font-semibold text-white">Database Generation</h3>
 
               <p className="mt-2 text-sm text-white/60">
                 Production-ready schemas.
@@ -151,35 +128,25 @@ export default function AuthLayout({
             </div>
 
             <div className="glass-panel rounded-3xl p-5">
-              <div className="mb-2 text-lg">
-                🔐
-              </div>
+              <div className="mb-2 text-lg text-amber-500">æ</div>
 
-              <h3 className="font-semibold text-white">
-                Authentication
-              </h3>
+              <h3 className="font-semibold text-white">AI Data Assistant</h3>
 
               <p className="mt-2 text-sm text-white/60">
-                Built-in user management.
+                Query your database using natural language.
               </p>
             </div>
 
             <div className="glass-panel rounded-3xl p-5">
-              <div className="mb-2 text-lg">
-                🤖
-              </div>
+              <div className="mb-2 text-lg text-green-500">æ</div>
 
-              <h3 className="font-semibold text-white">
-                AI Schema Builder
-              </h3>
+              <h3 className="font-semibold text-white">AI Schema Builder</h3>
 
               <p className="mt-2 text-sm text-white/60">
                 Generate structures from prompts.
               </p>
             </div>
-
           </div>
-
         </div>
         {/* RIGHT PANEL */}
 

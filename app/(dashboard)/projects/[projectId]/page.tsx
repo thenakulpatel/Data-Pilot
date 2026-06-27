@@ -61,7 +61,7 @@ export default async function
     max-w-7xl
 
     px-6
-    py-10
+    py-6
 
     space-y-10
   "
@@ -106,8 +106,8 @@ export default async function
         text-white/50
       "
         >
-          Design schemas, generate APIs,
-          manage tables and deploy your backend.
+          Design schemas, generate APIs and
+          manage tables.
         </p>
 
       </div>

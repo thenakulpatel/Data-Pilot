@@ -88,17 +88,17 @@ export default function AppNavbar() {
               text-white
             "
                     >
-                        B
+                        æ
                     </div>
 
                     <div>
                         <p
                             className="
-                text-sm
-                text-white/50
+                text-lg
+                text-white/70
               "
                         >
-                            Backend Generator
+                            Data - Pilot
                         </p>
                     </div>
                 </Link>
